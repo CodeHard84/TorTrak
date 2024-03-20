@@ -3,6 +3,9 @@
 
 'use strict';
 
+// Globals
+const stormsArray = [];
+
 
 function loadStorms() {
   // Load all storms from storms.json
@@ -10,10 +13,9 @@ function loadStorms() {
   // TODO: Save the data to local storage and then check for it on subsequent visits.
 
   // GPT Helped with fetching the JSON file.
-  fetch('/data/output.json')
+  fetch('data/output.json')
     .then(response => response.json())
     .then(stormData => {
-      const stormsArray = [];
 
       // Iterate over each storm data in the JSON array and create an object
       stormData.forEach(storm => {
@@ -53,14 +55,14 @@ function loadStorms() {
         stormsArray.push(stormObject);
 
         // HTML test
-        const stormElement = document.createElement('div');
-        stormElement.innerHTML = `
-          <h2>${storm.st}</h2>
-          <p>Date: ${storm.date}</p>
-          <p>Time: ${storm.time}</p>
-          <p>Magnitude: ${storm.mag}</p>
-        `;
-        document.body.appendChild(stormElement);
+        // const stormElement = document.createElement('div');
+        // stormElement.innerHTML = `
+        //   <h2>${storm.st}</h2>
+        //   <p>Date: ${storm.date}</p>
+        //   <p>Time: ${storm.time}</p>
+        //   <p>Magnitude: ${storm.mag}</p>
+        // `;
+        // document.body.appendChild(stormElement);
       });
       console.log(stormsArray);
     });
