@@ -13,7 +13,7 @@ function loadStorms() {
   // TODO: Save the data to local storage and then check for it on subsequent visits.
 
   // GPT Helped with fetching the JSON file.
-  fetch('data/output.json')
+  fetch('../data/output.json')
     .then(response => response.json())
     .then(stormData => {
 
