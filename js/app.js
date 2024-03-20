@@ -5,6 +5,7 @@
 
 // Globals
 const stormsArray = [];
+const currentURL = window.location.href; // Fix to get this to work both locally and on GH pages.
 
 
 function loadStorms() {
@@ -13,7 +14,7 @@ function loadStorms() {
   // TODO: Save the data to local storage and then check for it on subsequent visits.
 
   // GPT Helped with fetching the JSON file.
-  fetch('../data/output.json')
+  fetch(currentURL + '/data/output.json')
     .then(response => response.json())
     .then(stormData => {
 
@@ -69,3 +70,4 @@ function loadStorms() {
 }
 
 loadStorms();
+console.log(currentURL);
