@@ -23,12 +23,13 @@ function loadStorms() {
   const tmpStormsArray = [];
   // GPT Helped with fetching the JSON file.
   // Comment one out depending on local or GH hosted.
-  // fetch('https://codehard84.github.io/TorTrak/data/output.json')
-  fetch('/data/output.json', { async: false })
-    .then(response => response.json()) // Extract JSON data from response
+  fetch('https://codehard84.github.io/TorTrak/data/output.json')
+  // fetch('/data/output.json')
+    .then(response => response.json())
     .then(stormData => {
       stormData.forEach(storm => {
         if (validStates.includes(storm.st)) {
+          // Shema here: /data/SPC_severe_database_description.pdf
           const stormObject = {
             om: storm.om,
             yr: storm.yr,
@@ -73,3 +74,6 @@ function isKeyInLocalStorage(key) {
   // Will return true if key exist in ls or false if !
   return localStorage.getItem(key) !== null;
 }
+
+// This won't work because fetch is async.
+console.log(stormsArray);
