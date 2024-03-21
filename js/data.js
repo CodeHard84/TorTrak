@@ -62,16 +62,17 @@ const statesData = {
   WV: { landmass: 24038, fullName: 'West Virginia', population: 1775932, wikiLink: 'https://en.wikipedia.org/wiki/West_Virginia' },
   WI: { landmass: 54158, fullName: 'Wisconsin', population: 5955737, wikiLink: 'https://en.wikipedia.org/wiki/Wisconsin' },
   WY: { landmass: 97093, fullName: 'Wyoming', population: 583279, wikiLink: 'https://en.wikipedia.org/wiki/Wyoming' },
-  // While doing my research on Wikipedia for the above object I found that all the flags had a similar naming covention...
-  // This function is going to use that! Wikipedia however doesn't allow embedding so I found flagpedia.net which actually has
-  // an API. =)
-  // Function specific to this object
-
-  // Available flag sizes w20, w40, w80, w160, w320, w640, w1280, w2560
-  buildFlagUrl: function (stateAbbr, size='w320') {
-    const lowerAbbr = stateAbbr.toLowerCase(); // Flagpedia requires lowercase abbreviation.
-    const flagUrl = `https://flagcdn.com/${size}/us-${lowerAbbr}.png`;
-    return flagUrl;
-  }
 };
+
+// While doing my research on Wikipedia for the above object I found that all the flags had a similar naming covention...
+// This function is going to use that! Wikipedia however doesn't allow embedding so I found flagpedia.net which actually has
+// an API. =)
+// Function specific to this object
+
+// Available flag sizes w20, w40, w80, w160, w320, w640, w1280, w2560
+function buildFlagUrl (stateAbbr, size = 'w320') {
+  const lowerAbbr = stateAbbr.toLowerCase(); // Flagpedia requires lowercase abbreviation.
+  const flagUrl = `https://flagcdn.com/${size}/us-${lowerAbbr}.png`;
+  return flagUrl;
+}
 

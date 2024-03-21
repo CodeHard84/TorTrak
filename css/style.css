@@ -1,0 +1,27 @@
+/* charts.html specific */
+.state-flag ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.state-flag li {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.state-flag img {
+  width: 20px;
+  height: auto;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.state-columns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.state-column {
+  flex: 1;
+}
