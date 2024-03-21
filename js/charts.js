@@ -57,12 +57,13 @@ function createStatesList() {
   container.appendChild(stateColumns);
 }
 
-// Call the function to create the list of states with flags
 
+
+// Call the function to create the list of states with flags
 // If we have a state variable we don't need the columns
 // Retrieve state variable from URL
-const urlParams = new URLSearchParams(window.location.search);
-const state = urlParams.get('state');
+const urlParams = new URLSearchParams(window.location.search); // GPT helped here
+const state = urlParams.get('state'); // GPT helped here
 
 if (state) {
   // We have a state variable generate stuff for the state.
