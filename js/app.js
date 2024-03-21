@@ -81,6 +81,8 @@ function isKeyInLocalStorage(key) {
   return localStorage.getItem(key) !== null;
 }
 
+// I have to build all the functions in here because stormsArray is a promise stormsArray is fully
+// resolved in the code below. Not sure if this is the best way, it is however the only way I know.
 loadStorms().then(stormsArray => {
   function getTotalStormsPerState() {
     // Going to use reduce to count the storms per state.
@@ -98,11 +100,14 @@ loadStorms().then(stormsArray => {
 
   // renderBarChart takes key value such as: state: numberofstorms
   // in one object.
-  function renderBarChart(kvp, canvasID) {
+  function renderBarChart(kvp, canvasID, dataLabel) {
+    // kvp - Key Value Pair (Such as OK: 100)
+    // canvasID - The ID of the canvas in HTML
+    // dataLabel - The label explaining the contents in the bar chart
     const chartData = {
       labels: Object.keys(kvp),
       datasets: [{
-        label: 'Number of Storms',
+        label: dataLabel,
         data: Object.values(kvp),
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
         borderColor: 'rgba(54, 162, 235, 1)',
@@ -125,5 +130,5 @@ loadStorms().then(stormsArray => {
   }
 
   // Call functions to render default and user requested data.
-  renderBarChart(stormCountsPerState, 'stormsChart');
+  renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms Per State');
 });
