@@ -27,8 +27,8 @@ async function loadStorms() {
 
   // GPT helped with fetching the JSON file.
   // Comment one out depending on local or GH hosted.
-  // const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
-  const response = await fetch('output.json');
+  const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
+  // const response = await fetch('data/output.json');
   const stormData = await response.json();
 
   stormData.forEach(storm => {
