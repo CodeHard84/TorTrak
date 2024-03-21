@@ -1,3 +1,6 @@
+/* map css */
+#stormsMap { height: 600px; }
+
 /* charts.html specific */
 .state-flag ul {
   list-style: none;

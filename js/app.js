@@ -169,5 +169,12 @@ loadStorms().then(array => {
   renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
 });
 
+// Map stuff
+var map = L.map('stormsMap', { attributionControl:false }).setView([35.481918, -97.508469], 7);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+}).addTo(map);
+
 // Test the flag builder
 // console.log(statesData.buildFlagUrl('OK', 'w40'));
