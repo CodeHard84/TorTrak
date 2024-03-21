@@ -19,54 +19,60 @@ const validStates = [
 const stormsArray = loadStorms();
 
 
-function loadStorms() {
+// Going to model this function after the function presented by MDN at:
+// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
+async function loadStorms() {
   const tmpStormsArray = [];
-  // GPT Helped with fetching the JSON file.
+
+  // GPT helped with fetching the JSON file.
   // Comment one out depending on local or GH hosted.
-  fetch('https://codehard84.github.io/TorTrak/data/output.json')
-  // fetch('/data/output.json')
-    .then(response => response.json())
-    .then(stormData => {
-      stormData.forEach(storm => {
-        if (validStates.includes(storm.st)) {
-          // Shema here: /data/SPC_severe_database_description.pdf
-          const stormObject = {
-            om: storm.om,
-            yr: storm.yr,
-            mo: storm.mo,
-            dy: storm.dy,
-            date: storm.date,
-            time: storm.time,
-            tz: storm.tz,
-            st: storm.st,
-            stf: storm.stf,
-            stn: storm.stn,
-            mag: storm.mag,
-            inj: storm.inj,
-            fat: storm.fat,
-            loss: storm.loss,
-            closs: storm.closs,
-            slat: storm.slat,
-            slon: storm.slon,
-            elat: storm.elat,
-            elon: storm.elon,
-            len: storm.len,
-            wid: storm.wid,
-            ns: storm.ns,
-            sn: storm.sn,
-            sg: storm.sg,
-            f1: storm.f1,
-            f2: storm.f2,
-            f3: storm.f3,
-            f4: storm.f4,
-            fc: storm.fc
-          };
-          tmpStormsArray.push(stormObject);
-        }
-      });
-      console.log(tmpStormsArray);
-      return tmpStormsArray;
-    });
+  // const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
+  const response = await fetch('output.json');
+  const stormData = await response.json();
+
+  stormData.forEach(storm => {
+    // Going to make sure we don't have invalid states or data older than 1990. When I can
+    // use a database this will be an easy change to include all of the data.
+    // if (validStates.includes(storm.st) && storm.yr >= 1990) {
+    if (validStates.includes(storm.st)) {
+      // Schema here: /data/SPC_severe_database_description.pdf
+      const stormObject = {
+        om: storm.om,
+        yr: storm.yr,
+        mo: storm.mo,
+        dy: storm.dy,
+        date: storm.date,
+        time: storm.time,
+        tz: storm.tz,
+        st: storm.st,
+        stf: storm.stf,
+        stn: storm.stn,
+        mag: storm.mag,
+        inj: storm.inj,
+        fat: storm.fat,
+        loss: storm.loss,
+        closs: storm.closs,
+        slat: storm.slat,
+        slon: storm.slon,
+        elat: storm.elat,
+        elon: storm.elon,
+        len: storm.len,
+        wid: storm.wid,
+        ns: storm.ns,
+        sn: storm.sn,
+        sg: storm.sg,
+        f1: storm.f1,
+        f2: storm.f2,
+        f3: storm.f3,
+        f4: storm.f4,
+        fc: storm.fc
+      };
+      tmpStormsArray.push(stormObject);
+    }
+  });
+  // console.log(tmpStormsArray);
+  return tmpStormsArray;
 }
 
 // Check if a key exist in localStorage
@@ -75,5 +81,39 @@ function isKeyInLocalStorage(key) {
   return localStorage.getItem(key) !== null;
 }
 
-// This won't work because fetch is async.
-console.log(stormsArray);
+loadStorms().then(stormsArray => {
+  function getTotalStormsPerState() {
+    // Going to use reduce to count the storms per state.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
+    const stormCounts = stormsArray.reduce((total, storm) => {
+      total[storm.st] = (total[storm.st] || 0) + 1;
+      return total;
+    }, {});
+    return stormCounts;
+  }
+
+  let stormCounts = getTotalStormsPerState();
+  const chartData = {
+    labels: Object.keys(stormCounts),
+    datasets: [{
+      label: 'Number of Storms',
+      data: Object.values(stormCounts),
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1
+    }]
+  };
+
+  const ctx = document.getElementById('stormsChart').getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: chartData,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+});
