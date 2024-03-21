@@ -8,6 +8,6 @@ TorTrak is an application that allows a user to chart and plot storm data in a v
 
 ## Acknowledgements
 
-[Data Provider](https://www.spc.noaa.gov/)
-[Chart.js](https://www.chartjs.org/)
-[Leaflet](https://leafletjs.com/)
+* [NOAA Data Provider](https://www.spc.noaa.gov/)
+* [Chart.js](https://www.chartjs.org/)
+* [Leaflet](https://leafletjs.com/)

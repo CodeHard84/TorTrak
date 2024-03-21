@@ -1,71 +1,161 @@
-// TorTrak Source
-// Filename: app.js
-
 'use strict';
 
 // Globals
-const stormsArray = [];
+let stormsArray;
 
 
-function loadStorms() {
-  // Load all storms from storms.json
-  // if allStorms key does not exist in storage.
-  // TODO: Save the data to local storage and then check for it on subsequent visits.
+// Going to model this function after the function presented by MDN at:
+// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+async function loadStorms() {
+  const tmpStormsArray = [];
 
-  // GPT Helped with fetching the JSON file.
-  fetch('https://codehard84.github.io/TorTrak/data/output.json') // TODO: This needs to not be hardcoded.
-    .then(response => response.json())
-    .then(stormData => {
+  // GPT helped with fetching the JSON file.
+  // Comment one out depending on local or GH hosted.
+  // const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
+  const response = await fetch('data/output.json'); // <--- This is the ENTIRE request, which has more than just JSON.
+  const stormData = await response.json(); // <--- We only want the JSON, not the ENTIRE request body.
 
-      // Iterate over each storm data in the JSON array and create an object
-      stormData.forEach(storm => {
-        const stormObject = {
-          om: storm.om,
-          yr: storm.yr,
-          mo: storm.mo,
-          dy: storm.dy,
-          date: storm.date,
-          time: storm.time,
-          tz: storm.tz,
-          st: storm.st,
-          stf: storm.stf,
-          stn: storm.stn,
-          mag: storm.mag,
-          inj: storm.inj,
-          fat: storm.fat,
-          loss: storm.loss,
-          closs: storm.closs,
-          slat: storm.slat,
-          slon: storm.slon,
-          elat: storm.elat,
-          elon: storm.elon,
-          len: storm.len,
-          wid: storm.wid,
-          ns: storm.ns,
-          sn: storm.sn,
-          sg: storm.sg,
-          f1: storm.f1,
-          f2: storm.f2,
-          f3: storm.f3,
-          f4: storm.f4,
-          fc: storm.fc
-        };
-
-        // Push the created storm object to the array
-        stormsArray.push(stormObject);
-
-        // HTML test
-        // const stormElement = document.createElement('div');
-        // stormElement.innerHTML = `
-        //   <h2>${storm.st}</h2>
-        //   <p>Date: ${storm.date}</p>
-        //   <p>Time: ${storm.time}</p>
-        //   <p>Magnitude: ${storm.mag}</p>
-        // `;
-        // document.body.appendChild(stormElement);
-      });
-      console.log(stormsArray);
-    });
+  stormData.forEach(storm => {
+    // Going to make sure we don't have invalid states or data older than 1990. When I can
+    // use a database this will be an easy change to include all of the data.
+    // if (validStates.includes(storm.st) && storm.yr >= 1990) {
+    if (statesLandmass[storm.st]) {
+      // Schema here: /data/SPC_severe_database_description.pdf
+      const stormObject = {
+        om: storm.om,
+        yr: storm.yr,
+        mo: storm.mo,
+        dy: storm.dy,
+        date: storm.date,
+        time: storm.time,
+        tz: storm.tz,
+        st: storm.st,
+        stf: storm.stf,
+        stn: storm.stn,
+        mag: storm.mag,
+        inj: storm.inj,
+        fat: storm.fat,
+        loss: storm.loss,
+        closs: storm.closs,
+        slat: storm.slat,
+        slon: storm.slon,
+        elat: storm.elat,
+        elon: storm.elon,
+        len: storm.len,
+        wid: storm.wid,
+        ns: storm.ns,
+        sn: storm.sn,
+        sg: storm.sg,
+        f1: storm.f1,
+        f2: storm.f2,
+        f3: storm.f3,
+        f4: storm.f4,
+        fc: storm.fc
+      };
+      tmpStormsArray.push(stormObject);
+    }
+  });
+  return tmpStormsArray;
 }
 
-loadStorms();
+// Check if a key exists in localStorage
+// TODO: Remove this function if we do not use LS.
+function isKeyInLocalStorage(key) {
+  // Will return true if key exists in LS or false if not
+  return localStorage.getItem(key) !== null;
+}
+
+// Function to toggle sorting
+function toggleSorting() {
+  const sorted = document.getElementById('sortCheckbox').checked;
+  // Re-render the bar chart with sorted or unsorted data based on user selection
+  const stormCountsPerState = getTotalStormsPerState(stormsArray, sorted);
+  renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
+}
+
+// Function to calculate total storms per state
+function getTotalStormsPerState(stormsArray, sorted = false) {
+  // Going to use reduce to count the storms per state.
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
+  const stormCounts = stormsArray.reduce((total, storm) => {
+    total[storm.st] = (total[storm.st] || 0) + 1;
+    return total;
+  }, {});
+
+  // Let's add some sort of filtering logic
+  if (sorted) {
+    // GPT wrote this sorting logic. I could not figure out how to
+    // sort an object and that is because you can't it needs to be an array.
+    // Convert object to array of [state, count] pairs
+    const stormCountsArray = Object.entries(stormCounts);
+    // Sort array by count in descending order
+    stormCountsArray.sort((a, b) => b[1] - a[1]);
+    // Convert back to object
+    const sortedStormCounts = Object.fromEntries(stormCountsArray);
+    return sortedStormCounts;
+  } else {
+    return stormCounts; // <--- this is an object created from the stormsArray
+  }
+}
+
+// renderBarChart takes key value such as: state: numberofstorms
+// in one object.
+function renderBarChart(kvp, canvasID, dataLabel) {
+  // kvp - Key Value Pair (Such as OK: 100)
+  // canvasID - The ID of the canvas in HTML
+  // dataLabel - The label explaining the contents in the bar chart
+
+  // Check if chart exist and destroy it if it does.
+  const existingChart = Chart.getChart(canvasID);
+  if (existingChart) {
+    existingChart.destroy();
+  }
+
+    const chartData = {
+      labels: Object.keys(kvp),
+      datasets: [{
+        label: dataLabel,
+        data: Object.values(kvp),
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    };
+
+    const ctx = document.getElementById(canvasID).getContext('2d');
+    const myChart = new Chart(ctx, {
+      type: 'bar',
+      data: chartData,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        // Using a plugin to make these puppies zoomable.
+        // https://www.chartjs.org/chartjs-plugin-zoom/latest/
+        plugins: {
+          zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              mode: 'x', // Lock the zoom axis to X only.
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // I have to build all the functions in here because stormsArray is a promise stormsArray is fully
+  // resolved in the code below. Not sure if this is the best way, it is however the only way I know.
+  // So essentially we are calling loadStorms then saying WAIT for the array to load up, hence no longer
+  // a promise but the reality.
+  loadStorms().then(array => {
+    stormsArray = array;
+    let stormCountsPerState = getTotalStormsPerState(stormsArray);
+
+    // Call functions to render default and user requested data.
+    renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
+  });
