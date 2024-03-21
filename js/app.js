@@ -3,6 +3,7 @@
 // Globals
 let stormsArray;
 var map = L.map('stormsMap', { attributionControl: false }).setView([35.481918, -97.508469], 7);
+let tileLayer;
 
 
 // Going to model this function after the function presented by MDN at:
@@ -75,7 +76,7 @@ function toggleSorting() {
 }
 
 // Function to calculate total storms per state
-function getTotalStormsPerState(stormsArray, sorted = false, yearMin=2022, yearMax=2022) {
+function getTotalStormsPerState(stormsArray, sorted = false, yearMin = 2022, yearMax = 2022) {
   // Going to use reduce to count the storms per state.
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
   const stormCounts = stormsArray.reduce((total, storm) => {
@@ -174,13 +175,17 @@ loadStorms().then(array => {
 });
 
 
-function renderMap() {
+function renderMap(yearMin=2022, yearMax=2022) {
+  // Clear the existing tile layer if it exists
+  if (tileLayer) {
+    map.removeLayer(tileLayer);
+  }
   // Map stuff
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19
   }).addTo(map);
 
-  addStorms();
+  addStorms(yearMin, yearMax);
 }
 
 function addStorms(yearMin = 2022, yearMax = 2022) {
@@ -193,10 +198,25 @@ function addStorms(yearMin = 2022, yearMax = 2022) {
       ];
 
       // Create the polyline and add it to the map
-      const polyline = L.polyline(lineCoordinates, {color: 'red'}).addTo(map);
-      
+      const polyline = L.polyline(lineCoordinates, { color: 'red', weight: 2 }).addTo(map);
+
+      const startCircle = L.circleMarker([storm.slat, storm.slon], { color: 'red', weight: 2, radius: 1 }).addTo(map);
+      const endCircle = L.circleMarker([storm.elat, storm.elon], { color: 'blue', weight: 2, radius: 1 }).addTo(map);
+
+      startCircle.bindPopup(`Start of Storm ${storm.om}`);
+      endCircle.bindPopup(`End of Storm ${storm.om}`);
+
       // Popup Info
       polyline.bindPopup(`Storm ${storm.om}`);
+
+      // Thicken the polyline on zoom. GPT and Stackoverflow helped here.
+      map.on('zoomend', function () {
+        const zoomLevel = map.getZoom();
+        // Adjust polyline weight based on zoom level
+        polyline.setStyle({ weight: zoomLevel <= 10 ? 1 : zoomLevel });
+        startCircle.setStyle({ weight: zoomLevel <= 10 ? 1 : zoomLevel });
+        endCircle.setStyle({ weight: zoomLevel <= 10 ? 1 : zoomLevel });
+      });
     }
   });
 }
