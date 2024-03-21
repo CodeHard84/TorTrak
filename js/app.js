@@ -11,8 +11,8 @@ async function loadStorms() {
 
   // GPT helped with fetching the JSON file.
   // Comment one out depending on local or GH hosted.
-  // const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
-  const response = await fetch('data/output.json'); // <--- This is the ENTIRE request, which has more than just JSON.
+  const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
+  // const response = await fetch('data/output.json'); // <--- This is the ENTIRE request, which has more than just JSON.
   const stormData = await response.json(); // <--- We only want the JSON, not the ENTIRE request body.
 
   stormData.forEach(storm => {
