@@ -66,9 +66,11 @@ const statesData = {
   // This function is going to use that! Wikipedia however doesn't allow embedding so I found flagpedia.net which actually has
   // an API. =)
   // Function specific to this object
-  buildFlagUrl: function (stateAbbr) {
-    const lowerAbbr = stateAbbr.toLowerCase();
-    const flagUrl = `https://flagcdn.com/w320/us-${lowerAbbr}.png`;
+
+  // Available flag sizes w20, w40, w80, w160, w320, w640, w1280, w2560
+  buildFlagUrl: function (stateAbbr, size='w320') {
+    const lowerAbbr = stateAbbr.toLowerCase(); // Flagpedia requires lowercase abbreviation.
+    const flagUrl = `https://flagcdn.com/${size}/us-${lowerAbbr}.png`;
     return flagUrl;
   }
 };

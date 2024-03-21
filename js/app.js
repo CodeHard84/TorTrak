@@ -169,3 +169,5 @@ loadStorms().then(array => {
   renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
 });
 
+// Test the flag builder
+// console.log(statesData.buildFlagUrl('OK', 'w40'));
