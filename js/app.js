@@ -19,7 +19,7 @@ async function loadStorms() {
     // Going to make sure we don't have invalid states or data older than 1990. When I can
     // use a database this will be an easy change to include all of the data.
     // if (validStates.includes(storm.st) && storm.yr >= 1990) {
-    if (statesLandmass[storm.st]) {
+    if (statesData[storm.st]) {
       // Schema here: /data/SPC_severe_database_description.pdf
       const stormObject = {
         om: storm.om,
