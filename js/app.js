@@ -4,13 +4,11 @@
 'use strict';
 
 // Globals
-
-const stormsArray = loadStorms();
+const stormsArray = loadStorms(); // <--- this will always be a promise unless awaited or using a .then statement.
 
 
 // Going to model this function after the function presented by MDN at:
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-
 async function loadStorms() {
   const tmpStormsArray = [];
 
@@ -64,6 +62,7 @@ async function loadStorms() {
 }
 
 // Check if a key exist in localStorage
+// TODO: Remove this function if we do not use LS.
 function isKeyInLocalStorage(key) {
   // Will return true if key exist in ls or false if !
   return localStorage.getItem(key) !== null;
@@ -71,22 +70,36 @@ function isKeyInLocalStorage(key) {
 
 // I have to build all the functions in here because stormsArray is a promise stormsArray is fully
 // resolved in the code below. Not sure if this is the best way, it is however the only way I know.
+// So essentially we are calling loadStorms then saying WAIT for the array to load up, hence no longer
+// a promise but the reality.
 loadStorms().then(stormsArray => {
-  console.log(stormsArray); // TODO: Remove this debug line.
-  function getTotalStormsPerState() {
+  function getTotalStormsPerState(sorted = false) {
     // Going to use reduce to count the storms per state.
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
     const stormCounts = stormsArray.reduce((total, storm) => {
       total[storm.st] = (total[storm.st] || 0) + 1;
       return total;
     }, {});
-    console.log(stormCounts); // TODO: Remove this debug line.
-    return stormCounts; // <--- this is an object created from the stormsArray
+
+    // Let's add some sort of filtering logic
+    if (sorted) {
+      // GPT wrote this sorting logic. I could not figure out how to
+      // sort an object and that is because you can't it needs to be an array.
+      // Convert object to array of [state, count] pairs
+      const stormCountsArray = Object.entries(stormCounts);
+      // Sort array by count in descending order
+      stormCountsArray.sort((a, b) => b[1] - a[1]);
+      // Convert back to object
+      const sortedStormCounts = Object.fromEntries(stormCountsArray);
+      return sortedStormCounts;
+    } else {
+      return stormCounts; // <--- this is an object created from the stormsArray
+    }
   }
 
   // Data variables
   // stormCountsPerState - Overall count of storms broken down per state.
-  let stormCountsPerState = getTotalStormsPerState();
+  let stormCountsPerState = getTotalStormsPerState(true);
 
   // renderBarChart takes key value such as: state: numberofstorms
   // in one object.
