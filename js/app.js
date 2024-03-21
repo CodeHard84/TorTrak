@@ -11,8 +11,8 @@ async function loadStorms() {
 
   // GPT helped with fetching the JSON file.
   // Comment one out depending on local or GH hosted.
-  const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
-  // const response = await fetch('data/output.json'); // <--- This is the ENTIRE request, which has more than just JSON.
+  // const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
+  const response = await fetch('data/output.json'); // <--- This is the ENTIRE request, which has more than just JSON.
   const stormData = await response.json(); // <--- We only want the JSON, not the ENTIRE request body.
 
   stormData.forEach(storm => {
@@ -111,51 +111,60 @@ function renderBarChart(kvp, canvasID, dataLabel) {
     existingChart.destroy();
   }
 
-    const chartData = {
-      labels: Object.keys(kvp),
-      datasets: [{
-        label: dataLabel,
-        data: Object.values(kvp),
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
-      }]
-    };
+  const chartData = {
+    labels: Object.keys(kvp),
+    datasets: [{
+      label: dataLabel,
+      data: Object.values(kvp),
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1
+    }]
+  };
 
-    const ctx = document.getElementById(canvasID).getContext('2d');
-    const myChart = new Chart(ctx, {
-      type: 'bar',
-      data: chartData,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        },
-        // Using a plugin to make these puppies zoomable.
-        // https://www.chartjs.org/chartjs-plugin-zoom/latest/
-        plugins: {
+  const ctx = document.getElementById(canvasID).getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: chartData,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      },
+      // Using a plugin to make these puppies zoomable.
+      // https://www.chartjs.org/chartjs-plugin-zoom/latest/
+      plugins: {
+        zoom: {
           zoom: {
-            zoom: {
-              wheel: {
-                enabled: true,
-              },
-              mode: 'x', // Lock the zoom axis to X only.
-            }
+            wheel: {
+              enabled: true,
+            },
+            mode: 'x', // Lock the zoom axis to X only.
           }
         }
+      },
+      // GPT helped with this.. My idea GPTs code.
+      onClick: (event, chartElement) => {
+        const activeElements = myChart.getElementsAtEventForMode(event, 'nearest', myChart.options);
+        if (activeElements.length > 0) {
+          const clickedLabel = chartData.labels[activeElements[0].index];
+          const stateAbbreviation = clickedLabel;
+          window.location.href = `/charts.html?state=${stateAbbreviation}`; // <-- My code =)
+        }
       }
-    });
-  }
-
-  // I have to build all the functions in here because stormsArray is a promise stormsArray is fully
-  // resolved in the code below. Not sure if this is the best way, it is however the only way I know.
-  // So essentially we are calling loadStorms then saying WAIT for the array to load up, hence no longer
-  // a promise but the reality.
-  loadStorms().then(array => {
-    stormsArray = array;
-    let stormCountsPerState = getTotalStormsPerState(stormsArray);
-
-    // Call functions to render default and user requested data.
-    renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
+    }
   });
+}
+
+// I have to build all the functions in here because stormsArray is a promise stormsArray is fully
+// resolved in the code below. Not sure if this is the best way, it is however the only way I know.
+// So essentially we are calling loadStorms then saying WAIT for the array to load up, hence no longer
+// a promise but the reality.
+loadStorms().then(array => {
+  stormsArray = array;
+  let stormCountsPerState = getTotalStormsPerState(stormsArray);
+
+  // Call functions to render default and user requested data.
+  renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
+});
