@@ -139,6 +139,7 @@ function isKeyInLocalStorage(key) {
 // I have to build all the functions in here because stormsArray is a promise stormsArray is fully
 // resolved in the code below. Not sure if this is the best way, it is however the only way I know.
 loadStorms().then(stormsArray => {
+  console.log(stormsArray); // TODO: Remove this debug line.
   function getTotalStormsPerState() {
     // Going to use reduce to count the storms per state.
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
@@ -146,8 +147,8 @@ loadStorms().then(stormsArray => {
       total[storm.st] = (total[storm.st] || 0) + 1;
       return total;
     }, {});
-    console.log(stormCounts);
-    return stormCounts;
+    console.log(stormCounts); // TODO: Remove this debug line.
+    return stormCounts; // <--- this is an object created from the stormsArray
   }
 
   // Data variables
@@ -180,11 +181,23 @@ loadStorms().then(stormsArray => {
           y: {
             beginAtZero: true
           }
+        },
+        // Using a plugin to make these puppies zoomable.
+        // https://www.chartjs.org/chartjs-plugin-zoom/latest/
+        plugins: {
+          zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              mode: 'x', // Lock the zoom axis to X only.
+            }
+          }
         }
       }
     });
   }
 
   // Call functions to render default and user requested data.
-  renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms Per State');
+  renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
 });
