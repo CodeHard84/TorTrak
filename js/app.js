@@ -96,6 +96,7 @@ loadStorms().then(stormsArray => {
   }
 
   // Data variables
+  // stormCountsPerState - Overall count of storms broken down per state.
   let stormCountsPerState = getTotalStormsPerState();
 
   // renderBarChart takes key value such as: state: numberofstorms
