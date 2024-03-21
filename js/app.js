@@ -2,6 +2,7 @@
 
 // Globals
 let stormsArray;
+var map = L.map('stormsMap', { attributionControl: false }).setView([35.481918, -97.508469], 7);
 
 
 // Going to model this function after the function presented by MDN at:
@@ -74,11 +75,13 @@ function toggleSorting() {
 }
 
 // Function to calculate total storms per state
-function getTotalStormsPerState(stormsArray, sorted = false) {
+function getTotalStormsPerState(stormsArray, sorted = false, yearMin=2022, yearMax=2022) {
   // Going to use reduce to count the storms per state.
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
   const stormCounts = stormsArray.reduce((total, storm) => {
-    total[storm.st] = (total[storm.st] || 0) + 1;
+    if (storm.yr >= yearMin && storm.yr <= yearMax) {
+      total[storm.st] = (total[storm.st] || 0) + 1;
+    }
     return total;
   }, {});
 
@@ -167,14 +170,36 @@ loadStorms().then(array => {
 
   // Call functions to render default and user requested data.
   renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
+  renderMap();
 });
 
-// Map stuff
-var map = L.map('stormsMap', { attributionControl:false }).setView([35.481918, -97.508469], 7);
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+function renderMap() {
+  // Map stuff
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19
-}).addTo(map);
+  }).addTo(map);
+
+  addStorms();
+}
+
+function addStorms(yearMin = 2022, yearMax = 2022) {
+  stormsArray.forEach(storm => {
+    if (storm.yr >= yearMin && storm.yr <= yearMax) {
+      // line between the starting and ending points
+      const lineCoordinates = [
+        [storm.slat, storm.slon], // Starting point
+        [storm.elat, storm.elon]  // Ending point
+      ];
+
+      // Create the polyline and add it to the map
+      const polyline = L.polyline(lineCoordinates, {color: 'red'}).addTo(map);
+      
+      // Popup Info
+      polyline.bindPopup(`Storm ${storm.om}`);
+    }
+  });
+}
 
 // Test the flag builder
 // console.log(statesData.buildFlagUrl('OK', 'w40'));
