@@ -89,31 +89,41 @@ loadStorms().then(stormsArray => {
       total[storm.st] = (total[storm.st] || 0) + 1;
       return total;
     }, {});
+    console.log(stormCounts);
     return stormCounts;
   }
 
-  let stormCounts = getTotalStormsPerState();
-  const chartData = {
-    labels: Object.keys(stormCounts),
-    datasets: [{
-      label: 'Number of Storms',
-      data: Object.values(stormCounts),
-      backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      borderColor: 'rgba(54, 162, 235, 1)',
-      borderWidth: 1
-    }]
-  };
+  // Data variables
+  let stormCountsPerState = getTotalStormsPerState();
 
-  const ctx = document.getElementById('stormsChart').getContext('2d');
-  const myChart = new Chart(ctx, {
-    type: 'bar',
-    data: chartData,
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
+  // renderBarChart takes key value such as: state: numberofstorms
+  // in one object.
+  function renderBarChart(kvp, canvasID) {
+    const chartData = {
+      labels: Object.keys(kvp),
+      datasets: [{
+        label: 'Number of Storms',
+        data: Object.values(kvp),
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    };
+
+    const ctx = document.getElementById(canvasID).getContext('2d');
+    const myChart = new Chart(ctx, {
+      type: 'bar',
+      data: chartData,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         }
       }
-    }
-  });
+    });
+  }
+
+  // Call functions to render default and user requested data.
+  renderBarChart(stormCountsPerState, 'stormsChart');
 });
