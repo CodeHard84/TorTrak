@@ -61,5 +61,15 @@ const statesData = {
   WA: { landmass: 66456, fullName: 'Washington', population: 7799803, wikiLink: 'https://en.wikipedia.org/wiki/Washington_(state)' },
   WV: { landmass: 24038, fullName: 'West Virginia', population: 1775932, wikiLink: 'https://en.wikipedia.org/wiki/West_Virginia' },
   WI: { landmass: 54158, fullName: 'Wisconsin', population: 5955737, wikiLink: 'https://en.wikipedia.org/wiki/Wisconsin' },
-  WY: { landmass: 97093, fullName: 'Wyoming', population: 583279, wikiLink: 'https://en.wikipedia.org/wiki/Wyoming' }
+  WY: { landmass: 97093, fullName: 'Wyoming', population: 583279, wikiLink: 'https://en.wikipedia.org/wiki/Wyoming' },
+  // While doing my research on Wikipedia for the above object I found that all the flags had a similar naming covention...
+  // This function is going to use that! Wikipedia however doesn't allow embedding so I found flagpedia.net which actually has
+  // an API. =)
+  // Function specific to this object
+  buildFlagUrl: function (stateAbbr) {
+    const lowerAbbr = stateAbbr.toLowerCase();
+    const flagUrl = `https://flagcdn.com/w320/us-${lowerAbbr}.png`;
+    return flagUrl;
+  }
 };
+

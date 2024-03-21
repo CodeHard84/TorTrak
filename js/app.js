@@ -168,3 +168,4 @@ loadStorms().then(array => {
   // Call functions to render default and user requested data.
   renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
 });
+
