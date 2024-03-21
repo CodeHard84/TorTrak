@@ -8,13 +8,68 @@
 // The valid states will protect us from loading values from outside the 50 states.
 // We will also use this to make a drop down list of filterable states for our charts
 // and maps.
-const validStates = [
-  'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-  'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-  'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-  'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-  'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
-];
+// const validStates = [
+//   'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+//   'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+//   'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+//   'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+//   'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
+// ];
+
+// Also want the landmass sizes in sq miles.
+// This can be consolidated with the validStates.
+const statesLandmass = {
+  AL: 50744,
+  AK: 571951,
+  AZ: 113594,
+  AR: 52035,
+  CA: 155779,
+  CO: 103642,
+  CT: 4842,
+  DE: 1949,
+  FL: 53927,
+  GA: 57906,
+  HI: 6423,
+  ID: 82747,
+  IL: 55519,
+  IN: 35826,
+  IA: 55857,
+  KS: 81815,
+  KY: 39732,
+  LA: 43562,
+  ME: 30843,
+  MD: 9707,
+  MA: 7800,
+  MI: 56539,
+  MN: 79627,
+  MS: 46923,
+  MO: 68742,
+  MT: 145546,
+  NE: 76824,
+  NV: 109781,
+  NH: 8968,
+  NJ: 7417,
+  NM: 121298,
+  NY: 47214,
+  NC: 48618,
+  ND: 69001,
+  OH: 40948,
+  OK: 68667,
+  OR: 95988,
+  PA: 44817,
+  RI: 1034,
+  SC: 30109,
+  SD: 75811,
+  TN: 41235,
+  TX: 261232,
+  UT: 82170,
+  VT: 9217,
+  VA: 39490,
+  WA: 66456,
+  WV: 24038,
+  WI: 54158,
+  WY: 97093
+};
 
 const stormsArray = loadStorms();
 
@@ -27,15 +82,15 @@ async function loadStorms() {
 
   // GPT helped with fetching the JSON file.
   // Comment one out depending on local or GH hosted.
-  const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
-  // const response = await fetch('data/output.json');
-  const stormData = await response.json();
+  // const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
+  const response = await fetch('data/output.json'); // <--- This is the ENTIRE request, which has more than just JSON.
+  const stormData = await response.json(); // <--- We only want the JSON, not the ENTIRE request body.
 
   stormData.forEach(storm => {
     // Going to make sure we don't have invalid states or data older than 1990. When I can
     // use a database this will be an easy change to include all of the data.
     // if (validStates.includes(storm.st) && storm.yr >= 1990) {
-    if (validStates.includes(storm.st)) {
+    if (statesLandmass[storm.st]) {
       // Schema here: /data/SPC_severe_database_description.pdf
       const stormObject = {
         om: storm.om,
