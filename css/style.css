@@ -1,0 +1,62 @@
+/* Nav stuff */
+nav {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #111;
+}
+
+/* map css */
+#stormsMap {
+  height: 600px;
+}
+
+/* charts.html specific */
+.state-flag ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.state-flag li {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.state-flag img {
+  width: 20px;
+  height: auto;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.state-columns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.state-column {
+  flex: 1;
+}
