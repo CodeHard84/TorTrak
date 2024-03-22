@@ -245,7 +245,7 @@ function renderMap(yearMin = 2022, yearMax = 2022) {
 // Event listener for the map provider dropdown change
 const mapProviderDropdown = document.getElementById('mapProvider');
 mapProviderDropdown.addEventListener('change', function () {
-  const selectedProvider = this.value;
+  provider = this.value;
 
   // Have to clear the old tiles
   // map.eachLayer(function (layer) {
