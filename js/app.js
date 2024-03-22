@@ -7,6 +7,8 @@ let tileLayer;
 let polyline;
 const rangeInput = document.getElementById('range');
 const rangeUpperInput = document.getElementById('rangeUpper');
+const stateFilter = document.getElementById('stateFilter');
+const selectedValue = stateFilter.value;
 
 
 // Going to model this function after the function presented by MDN at:
@@ -308,6 +310,8 @@ document.addEventListener('DOMContentLoaded', function () {
       upperBoundInput.value = lowerBoundInput.value;
       rangeUpperInput.value = lowerBoundInput.value;
     }
+    // Redraw map with updated years
+    renderMap(parseInt(lowerBoundInput.value), parseInt(upperBoundInput.value));
   });
 
   rangeUpperInput.addEventListener('input', function () {
@@ -317,6 +321,8 @@ document.addEventListener('DOMContentLoaded', function () {
       lowerBoundInput.value = upperBoundInput.value;
       rangeInput.value = upperBoundInput.value;
     }
+    // Redraw map with updated years
+    renderMap(parseInt(lowerBoundInput.value), parseInt(upperBoundInput.value));
   });
 
   // Initialize values
@@ -349,6 +355,37 @@ resetButton.addEventListener('click', function () {
   toggleSorting(sortCheckbox);
 
   // Reset map and then recenter it
-  renderMap();
+  map.eachLayer(function (layer) {
+    map.removeLayer(layer);
+  });
+
+  renderMap(rangeInput.value, rangeUpperInput.value);
   map.setView([35.481918, -97.508469], 7);
 });
+
+function populateStateDropdown() {
+  const stateFilter = document.getElementById('stateFilter');
+  
+  // option for ALL states with ALL as default.
+  const allOption = document.createElement('option');
+  allOption.value = 'ALL';
+  allOption.text = 'ALL';
+  stateFilter.appendChild(allOption);
+
+  // GPT helped with this.
+  Object.keys(statesData).forEach(abbreviation => {
+    const fullName = statesData[abbreviation].fullName;
+    const option = document.createElement('option');
+    option.text = fullName;
+    option.value = abbreviation;
+    stateFilter.appendChild(option);
+  });
+}
+
+stateFilter.addEventListener('change', function() {
+  const selectedValue = stateFilter.value;
+  console.log('Selected value:', selectedValue);
+});
+
+// Call the function to populate the state dropdown
+populateStateDropdown();
