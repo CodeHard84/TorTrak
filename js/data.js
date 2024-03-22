@@ -208,10 +208,11 @@ loadStorms().then(array => {
 
   // Render the first map only if the page is root or index.html this is the only hack I could think of...
   if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+    console.log(stormsArray);
     let stormCountsPerState = getTotalStormsPerState(stormsArray);
     renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Tornadoes');
     renderMap(yearMin, yearMax);
-    resetButton.dispatchEvent(new Event('click'));
+    // resetButton.dispatchEvent(new Event('click'));
   }
   if (window.location.pathname === '/charts.html') {
     // Call the function to create the list of states with flags
