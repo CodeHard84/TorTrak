@@ -1,53 +1,90 @@
+body {
+  background-color: #f5f5f5;
+}
+
 /* Nav stuff */
 .topNav {
-  background-color: #333;
-  color: white;
-  padding: 20px;
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .topNav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  text-align: right; /* links right on nav */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .topNav li {
   display: inline;
+  font-family: "Staatliches", sans-serif;
+  font-weight: bold;
+  font-style: normal;
 }
 
 .topNav li a {
-  color: white;
-  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px; 
+  color: #333;
+  text-decoration: none; 
   padding: 14px 16px;
 }
 
 /* Add pipe separator between links */
 .topNav li:not(:last-child) {
-  border-right: 1px solid white;
+  border-right: 1px solid #999;
   margin-right: 10px;
 }
 
 .topNav li a:hover {
-  background-color: #111;
+  background-color: #ddd;
 }
 
 .navLogo {
   position: absolute;
   left: 60px;
   top: 10px;
-  z-index:500; /* Why does 500 work and nothing else? */
+  z-index: 500;
 }
 
 .navImg {
   max-width: 180px;
   max-height: 90px;
+  margin-right: 10px;
+}
+
+#tor {
+  margin-left: 120px;
+  color: #333;
+  font-family: "Faster One", system-ui;
+  font-weight: 400;
+  font-size: 60px;
+  font-style: normal;
+}
+
+#trak {
+  color: #c00;
+  font-family: "Faster One", system-ui;
+  font-weight: 400;
+  font-size: 60px;
+  font-style: normal;
+}
+
+/* removes underline from TorTrak slogan */
+.topNav .navSlogan a {
+  text-decoration: none;
 }
 
 /* map css */
 #stormsMap {
-  height: 600px;
+  height: 580px;
 }
 
 /* charts.html specific */

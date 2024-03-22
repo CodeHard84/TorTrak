@@ -170,7 +170,7 @@ loadStorms().then(array => {
   let stormCountsPerState = getTotalStormsPerState(stormsArray);
 
   // Call functions to render default and user requested data.
-  renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
+  renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Tornadoes');
   renderMap();
 });
 

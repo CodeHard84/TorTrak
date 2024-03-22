@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Faster+One&display=swap" rel="stylesheet">
   <title>TorTrak</title>
 </head>
 
@@ -15,20 +18,23 @@
 
   <nav class="topNav">
     <div class="navLogo">
-      <img src="img/lognobg.png" class="navImg"/>
+      <a href="index.html">
+        <img src="img/lognobg.png" class="navImg" />
+      </a>
     </div>
+    <div class="navSlogan"><a href="index.html"><span id="tor">Tor</span><span id="trak">Trak</a></span></div>
     <div class="navLinks">
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="charts.html">Charts</a></li>
-        <li><a href="#FAQ">FAQ</a></li>
+        <li><a href="faq.html">FAQ</a></li>
       </ul>
     </div>
   </nav>
 
   <div id="stormsMap"></div>
   <canvas id="stormsChart" width="800" height="100"></canvas>
-  <label for="sortCheckbox">Sort storms by greatest to least:</label>
+  <label for="sortCheckbox">Sort tornadoes from greatest to least:</label>
   <input type="checkbox" id="sortCheckbox" onchange="toggleSorting()">
 </body>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
