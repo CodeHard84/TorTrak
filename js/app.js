@@ -260,7 +260,7 @@ function renderMap(yearMin = 2022, yearMax = 2022) {
     const wikiUrl = statesData[selectedState].wikiLink;
     const capital = stateCapitals[selectedState].city;
     document.getElementById('stateStats').innerHTML = `${fullName}, with a population of ${population.toLocaleString()} people and a landmass spanning ${landmass.toLocaleString()} 
-   square miles, is home to its capital, ${capital}. Learn more about ${fullName} <a href='${wikiUrl}'>here</a>.`;
+   square miles, is home to its capital, ${capital}. Learn more about ${fullName} <a href='charts.html?state=${selectedState}'>here</a>.`;
   } else {
     document.getElementById('stateStats').innerHTML = `The United States boasts a population of 333,271,411 and covers a vast landmass spanning 3,119,884 square miles. Its capital, 
     Washington, D.C., stands as a symbol of its political and cultural significance. Learn more about the United States <a href='https://en.wikipedia.org/wiki/United_States'>here</a>.`;
