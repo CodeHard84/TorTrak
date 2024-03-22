@@ -135,8 +135,6 @@ const stateCapitals = {
 // Let the user pick a tile provider =)
 const mapProviders = {
   openStreetMap: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  stamen: 'https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.png',
-  stamenToner: 'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png',
   cartoDB: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
 };
 
