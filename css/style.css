@@ -1,31 +1,48 @@
 /* Nav stuff */
-nav {
+.topNav {
   background-color: #333;
   color: white;
-  padding: 10px;
+  padding: 20px;
 }
 
-ul {
+.topNav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
+  text-align: right; /* links right on nav */
 }
 
-li {
-  float: left;
+.topNav li {
+  display: inline;
 }
 
-li a {
-  display: block;
+.topNav li a {
   color: white;
-  text-align: center;
-  padding: 14px 16px;
   text-decoration: none;
+  padding: 14px 16px;
 }
 
-li a:hover {
+/* Add pipe separator between links */
+.topNav li:not(:last-child) {
+  border-right: 1px solid white;
+  margin-right: 10px;
+}
+
+.topNav li a:hover {
   background-color: #111;
+}
+
+.navLogo {
+  position: absolute;
+  left: 60px;
+  top: 10px;
+  z-index:500; /* Why does 500 work and nothing else? */
+}
+
+.navImg {
+  max-width: 180px;
+  max-height: 90px;
 }
 
 /* map css */
@@ -54,6 +71,7 @@ li a:hover {
 
 .state-columns {
   display: flex;
+  padding: 60px;
   justify-content: space-between;
 }
 
