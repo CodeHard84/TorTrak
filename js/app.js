@@ -453,6 +453,16 @@ stateFilter.addEventListener('change', function () {
   });
 
   renderMap(rangeInput.value, rangeUpperInput.value);
+
+  // Change the map view to the respective state capital.
+  // based on user state selection.
+  if (selectedState !== 'ALL') {
+    var capitalInfo = stateCapitals[selectedState];
+    var capitalCoordinates = [capitalInfo.lat, capitalInfo.lon];
+    map.setView(capitalCoordinates, 7);
+  } else {
+    map.setView([37.0902, -95.7129], 4); // Center of US
+  }
 });
 
 // Call the function to populate the state dropdown
