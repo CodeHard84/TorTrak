@@ -192,6 +192,8 @@ function addStorms(yearMin = 2022, yearMax = 2022) {
   stormsArray.forEach(storm => {
     if (storm.yr >= yearMin && storm.yr <= yearMax) {
       // line between the starting and ending points
+      // Most of this is straight from the leaflet documentation:
+      // https://leafletjs.com/reference.html#polyline
       const lineCoordinates = [
         [storm.slat, storm.slon], // Starting point
         [storm.elat, storm.elon]  // Ending point
@@ -203,10 +205,11 @@ function addStorms(yearMin = 2022, yearMax = 2022) {
       const startCircle = L.circleMarker([storm.slat, storm.slon], { color: 'red', weight: 2, radius: 1 }).addTo(map);
       const endCircle = L.circleMarker([storm.elat, storm.elon], { color: 'blue', weight: 2, radius: 1 }).addTo(map);
 
+      // Popup Info
+      // This is where I will add all of the info from our JSON file that
+      // we have not used yet.
       startCircle.bindPopup(`Start of Storm ${storm.om}`);
       endCircle.bindPopup(`End of Storm ${storm.om}`);
-
-      // Popup Info
       polyline.bindPopup(`Storm ${storm.om}`);
 
       // Thicken the polyline on zoom. GPT and Stackoverflow helped here.
