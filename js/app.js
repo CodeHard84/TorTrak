@@ -240,6 +240,19 @@ function renderMap(yearMin = 2022, yearMax = 2022) {
   customTileLayer.addTo(map);
 
   addStorms(yearMin, yearMax);
+
+  // Update the quick stats
+  let count = 0;
+  for (const storm of stormsArray) {
+    if (storm.yr >= yearMin && storm.yr <= yearMax && storm.st === selectedState) {
+      count++;
+    } else {
+      if(storm.yr >= yearMin && storm.yr <= yearMax && 'ALL' === selectedState) {
+        count++;
+      }
+    }
+  }
+  document.getElementById('stats').innerHTML = `You're Viewing: ${count}/${stormsArray.length} storms`;
 }
 
 // Event listener for the map provider dropdown change

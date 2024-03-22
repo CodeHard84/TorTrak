@@ -176,6 +176,14 @@ p {
   color: #333;
 }
 
+#stats {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px; /* Adjust font size to match the labels */
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
 /* index.html chart */
 #stormsChartCanvas {
   flex: 1;
