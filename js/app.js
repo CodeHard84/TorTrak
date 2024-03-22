@@ -17,16 +17,6 @@ let yearMax = rangeUpperInput.value;
 providerDrop.value = 'openStreetMap';
 let provider = providerDrop.value;
 
-// Render the first map
-loadStorms().then(array => {
-  stormsArray = array;
-
-  let stormCountsPerState = getTotalStormsPerState(stormsArray);
-  renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Tornadoes');
-  renderMap(yearMin, yearMax);
-});
-
-
 // Check if a key exists in localStorage
 // TODO: Remove this function if we do not use LS.
 function isKeyInLocalStorage(key) {

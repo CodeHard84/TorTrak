@@ -58,29 +58,6 @@ function createStatesList() {
 }
 
 
-
-// Call the function to create the list of states with flags
-// If we have a state variable we don't need the columns
-// Retrieve state variable from URL
-const urlParams = new URLSearchParams(window.location.search); // GPT helped here
-const state = urlParams.get('state'); // GPT helped here
-
-if (state) {
-  // We have a state variable generate stuff for the state.
-  const statesContainer = document.getElementById('statesContainer');
-  statesContainer.innerHTML = '';
-
-  createStatesChartPage();
-
-} else {
-  // No state variable passed in URL so make a list.
-
-  const statesContainer = document.getElementById('statesContainer');
-  statesContainer.innerHTML = '';
-
-  createStatesList();
-}
-
 function createStatesChartPage() {
   const stateContainer = document.getElementById('stateContainer');
   const img = document.createElement('img');
@@ -100,9 +77,6 @@ function createStatesChartPage() {
   const population = statesData[state].population;
   const landmass = statesData[state].landmass;
   const capital = stateCapitals[state].city;
-
-  // Test Stuff
-  console.log(stormsArray);
 
   // Populate stateStats with HTML content
   stateStats.innerHTML = `${fullName}, with a population of ${population.toLocaleString()} people and a landmass spanning ${landmass.toLocaleString()} square miles, 

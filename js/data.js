@@ -70,7 +70,7 @@ const statesData = {
 // Function specific to this object
 
 // Available flag sizes w20, w40, w80, w160, w320, w640, w1280, w2560
-function buildFlagUrl (stateAbbr, size = 'w320') {
+function buildFlagUrl(stateAbbr, size = 'w320') {
   const lowerAbbr = stateAbbr.toLowerCase(); // Flagpedia requires lowercase abbreviation.
   const flagUrl = `https://flagcdn.com/${size}/us-${lowerAbbr}.png`;
   return flagUrl;
@@ -201,4 +201,39 @@ async function loadStorms() {
 // a promise but the reality.
 
 let stormsArray = [];
+let state;
 
+loadStorms().then(array => {
+  stormsArray = array;
+
+  // Render the first map only if the page is root or index.html this is the only hack I could think of...
+  if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+    let stormCountsPerState = getTotalStormsPerState(stormsArray);
+    renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Tornadoes');
+    renderMap(yearMin, yearMax);
+  }
+  if (window.location.pathname === '/charts.html') {
+    // Call the function to create the list of states with flags
+    // If we have a state variable we don't need the columns
+    // Retrieve state variable from URL
+    const urlParams = new URLSearchParams(window.location.search); // GPT helped here
+    state = urlParams.get('state'); // GPT helped here
+
+    if (state) {
+      // We have a state variable generate stuff for the state.
+      const statesContainer = document.getElementById('statesContainer');
+      statesContainer.innerHTML = '';
+
+      createStatesChartPage();
+
+    } else {
+      // No state variable passed in URL so make a list.
+
+      const statesContainer = document.getElementById('statesContainer');
+      statesContainer.innerHTML = '';
+
+      createStatesList();
+    }
+
+  }
+});
