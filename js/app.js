@@ -16,6 +16,8 @@ const providerDrop = document.getElementById('mapProvider');
 let selectedState = 'OK';
 let yearMin = rangeInput.value;
 let yearMax = rangeUpperInput.value;
+providerDrop.value = 'openStreetMap';
+let provider = providerDrop.value;
 
 
 // Going to model this function after the function presented by MDN at:
@@ -218,7 +220,7 @@ loadStorms().then(array => {
 });
 
 
-function renderMap(provider = 'openStreetMap', yearMin = 2022, yearMax = 2022) {
+function renderMap(yearMin = 2022, yearMax = 2022) {
   const providerURL = mapProviders[provider];
   // Clear the existing tile layer if it exists
   if (tileLayer) {
@@ -242,7 +244,7 @@ function renderMap(provider = 'openStreetMap', yearMin = 2022, yearMax = 2022) {
 
 // Event listener for the map provider dropdown change
 const mapProviderDropdown = document.getElementById('mapProvider');
-mapProviderDropdown.addEventListener('change', function() {
+mapProviderDropdown.addEventListener('change', function () {
   const selectedProvider = this.value;
 
   // Have to clear the old tiles
@@ -252,7 +254,7 @@ mapProviderDropdown.addEventListener('change', function() {
 
   // console.log('Selected Provider: ' + selectedProvider);
 
-  renderMap(selectedProvider, yearMin, yearMax);
+  renderMap(yearMin, yearMax);
 });
 
 function togglePolyline() {
@@ -265,9 +267,9 @@ function togglePolyline() {
     map.eachLayer(function (layer) {
       map.removeLayer(layer);
     });
-    renderMap(providerDrop.value, yearMin, yearMax);
+    renderMap(yearMin, yearMax);
   } else {
-    renderMap(providerDrop.value, yearMin, yearMax);
+    renderMap(yearMin, yearMax);
   }
 }
 
@@ -290,8 +292,8 @@ function addStorms(yearMin = 2022, yearMax = 2022) {
       // What this check is doing is to make sure we have an ending elat, elon, and that our polyline is not disabled. Because:
       // 1. We don't want to draw a polyline if the user doesn't want it.
       // 2. A lot of this data does not have ending coordinates which bugs out the polyline. In this case we only mark the start of the storm.
-      if (!document.getElementById('disablePolylineCheckbox').checked 
-      && (storm.elat !== '0.0' && storm.elat !== '') && (storm.elon !== '0.0' && storm.elon !== '')) {
+      if (!document.getElementById('disablePolylineCheckbox').checked
+        && (storm.elat !== '0.0' && storm.elat !== '') && (storm.elon !== '0.0' && storm.elon !== '')) {
 
         // Create the polyline and add it to the map
         const polyline = L.polyline(lineCoordinates, { color: 'red', weight: 2 }).addTo(map);
@@ -346,8 +348,12 @@ document.addEventListener('DOMContentLoaded', function () {
     yearMax = rangeUpperInput.value;
 
     // Redraw map with updated years
+    // Clear the old map
+    map.eachLayer(function (layer) {
+      map.removeLayer(layer);
+    });
     toggleSorting();
-    renderMap(providerDrop.value, parseInt(lowerBoundInput.value), parseInt(upperBoundInput.value));
+    renderMap(parseInt(lowerBoundInput.value), parseInt(upperBoundInput.value));
   });
 
   rangeUpperInput.addEventListener('input', function () {
@@ -361,9 +367,12 @@ document.addEventListener('DOMContentLoaded', function () {
     yearMin = rangeInput.value;
     yearMax = rangeUpperInput.value;
 
-    // Redraw map with updated years
+    // Redraw map with updated years// Clear the old map
+    map.eachLayer(function (layer) {
+      map.removeLayer(layer);
+    });
     toggleSorting();
-    renderMap(providerDrop.value, parseInt(lowerBoundInput.value), parseInt(upperBoundInput.value));
+    renderMap(parseInt(lowerBoundInput.value), parseInt(upperBoundInput.value));
   });
 
   // Initialize values
@@ -409,11 +418,11 @@ resetButton.addEventListener('click', function () {
     map.removeLayer(layer);
   });
 
-  renderMap('openStreetMap', rangeInput.value, rangeUpperInput.value);
+  renderMap(rangeInput.value, rangeUpperInput.value);
   map.setView([35.481918, -97.508469], 7);
 });
 
-function populateStateDropdown() {  
+function populateStateDropdown() {
   // option for ALL states with ALL as default.
   const allOption = document.createElement('option');
   allOption.value = 'ALL';
@@ -435,7 +444,7 @@ function populateStateDropdown() {
   });
 }
 
-stateFilter.addEventListener('change', function() {
+stateFilter.addEventListener('change', function () {
   selectedState = stateFilter.value;
 
   // Clear the old map
@@ -443,7 +452,7 @@ stateFilter.addEventListener('change', function() {
     map.removeLayer(layer);
   });
 
-  renderMap(providerDrop.value, rangeInput.value, rangeUpperInput.value);
+  renderMap(rangeInput.value, rangeUpperInput.value);
 });
 
 // Call the function to populate the state dropdown
