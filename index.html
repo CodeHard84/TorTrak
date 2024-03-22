@@ -32,10 +32,21 @@
     </div>
   </nav>
 
-  <div id="stormsMap"></div>
-  <canvas id="stormsChart" width="800" height="100"></canvas>
-  <label for="sortCheckbox">Sort tornadoes from greatest to least:</label>
-  <input type="checkbox" id="sortCheckbox" onchange="toggleSorting()">
+  <div class="map-container">
+    <div id="stormsMap"></div>
+    <div id="filters">
+      <div id="mapFilters">
+        <h2>Map Filters</h2>
+      </div>
+      <div id="barChartFilter">
+        <h2>Chart Filters</h2>
+        <label for="sortCheckbox">Sort tornadoes from greatest to least:</label>
+        <input type="checkbox" id="sortCheckbox" onchange="toggleSorting()">
+      </div>
+    </div>
+  </div>
+
+  <canvas id="stormsChartCanvas" width="800" height="100"></canvas>
 </body>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>

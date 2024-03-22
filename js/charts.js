@@ -67,9 +67,17 @@ const state = urlParams.get('state'); // GPT helped here
 
 if (state) {
   // We have a state variable generate stuff for the state.
-  const container = document.getElementById('statesContainer');
-  container.innerHTML = '';
+  const statesContainer = document.getElementById('statesContainer');
+  statesContainer.innerHTML = '';
+
+  const stateContainer = document.getElementById('stateContainer');
+  stateContainer.innerHTML = 'I am ' + state + '.';
+
 } else {
   // No state variable passed in URL so make a list.
+
+  const statesContainer = document.getElementById('statesContainer');
+  statesContainer.innerHTML = '';
+
   createStatesList();
 }

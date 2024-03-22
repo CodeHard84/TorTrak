@@ -82,9 +82,40 @@ body {
   text-decoration: none;
 }
 
-/* map css */
+/* map stuff */
+.map-container {
+  display: flex;
+  align-items: stretch;
+}
+
 #stormsMap {
+  flex: 1;
+  margin-left: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+}
+
+/* filter box */
+#filters {
+  width: 300px;
   height: 580px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#mapFilters {
+  margin-bottom: 50px;
+}
+
+/* index.html chart */
+#stormsChartCanvas {
+  flex: 1;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #f0f0f0;
 }
 
 /* charts.html specific */
@@ -114,4 +145,12 @@ body {
 
 .state-column {
   flex: 1;
+}
+
+#stateContainer {
+  padding: 60px;
+}
+
+#faqContainer {
+  padding: 60px;
 }

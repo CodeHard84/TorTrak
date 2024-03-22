@@ -72,7 +72,7 @@ function toggleSorting() {
   const sorted = document.getElementById('sortCheckbox').checked;
   // Re-render the bar chart with sorted or unsorted data based on user selection
   const stormCountsPerState = getTotalStormsPerState(stormsArray, sorted);
-  renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Storms');
+  renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Storms');
 }
 
 // Function to calculate total storms per state
@@ -120,8 +120,8 @@ function renderBarChart(kvp, canvasID, dataLabel) {
     datasets: [{
       label: dataLabel,
       data: Object.values(kvp),
-      backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      borderColor: 'rgba(54, 162, 235, 1)',
+      backgroundColor: '#FF6384',
+      borderColor: '#FF6384',
       borderWidth: 1
     }]
   };
@@ -136,30 +136,29 @@ function renderBarChart(kvp, canvasID, dataLabel) {
           beginAtZero: true
         }
       },
-      // Using a plugin to make these puppies zoomable.
-      // https://www.chartjs.org/chartjs-plugin-zoom/latest/
       plugins: {
         zoom: {
           zoom: {
             wheel: {
               enabled: true,
             },
-            mode: 'x', // Lock the zoom axis to X only.
+            mode: 'x',
           }
         }
       },
-      // GPT helped with this.. My idea GPTs code.
+      // GPT helped with this click listener
       onClick: (event, chartElement) => {
         const activeElements = myChart.getElementsAtEventForMode(event, 'nearest', myChart.options);
         if (activeElements.length > 0) {
           const clickedLabel = chartData.labels[activeElements[0].index];
           const stateAbbreviation = clickedLabel;
-          window.location.href = `/charts.html?state=${stateAbbreviation}`; // <-- My code =)
+          window.location.href = `/charts.html?state=${stateAbbreviation}`;
         }
       }
     }
   });
 }
+
 
 // I have to build all the functions in here because stormsArray is a promise stormsArray is fully
 // resolved in the code below. Not sure if this is the best way, it is however the only way I know.
@@ -170,20 +169,28 @@ loadStorms().then(array => {
   let stormCountsPerState = getTotalStormsPerState(stormsArray);
 
   // Call functions to render default and user requested data.
-  renderBarChart(stormCountsPerState, 'stormsChart', 'Number of Tornadoes');
+  renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Tornadoes');
   renderMap();
 });
 
 
-function renderMap(yearMin=2022, yearMax=2022) {
+function renderMap(yearMin = 2022, yearMax = 2022) {
   // Clear the existing tile layer if it exists
   if (tileLayer) {
     map.removeLayer(tileLayer);
   }
   // Map stuff
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19
-  }).addTo(map);
+  const customTileLayer = 
+  // I made a custom layer to be able to change to a new tile provider in
+  // the future.
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    tileSize: 256,
+    zoomOffset: 0,
+  });
+
+  // Add the custom tile layer to the map
+  customTileLayer.addTo(map);
 
   addStorms(yearMin, yearMax);
 }
