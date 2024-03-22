@@ -1,5 +1,8 @@
 'use strict';
 
+// TODO: If I have time to refactor I am going to make an update function that is a central place for updating all
+// the charts and maps.
+
 // Globals
 let stormsArray;
 var map = L.map('stormsMap', { attributionControl: false }).setView([35.481918, -97.508469], 7);
@@ -8,7 +11,8 @@ let polyline;
 const rangeInput = document.getElementById('range');
 const rangeUpperInput = document.getElementById('rangeUpper');
 const stateFilter = document.getElementById('stateFilter');
-const selectedValue = stateFilter.value;
+// I have to set this from keeping ALL the storms from rendering.
+let selectedState = 'OK';
 
 
 // Going to model this function after the function presented by MDN at:
@@ -249,8 +253,12 @@ function togglePolyline() {
 }
 
 function addStorms(yearMin = 2022, yearMax = 2022) {
+  const selectedState = document.getElementById('stateFilter').value; // Get the selected state from the dropdown
   stormsArray.forEach(storm => {
-    if (storm.yr >= yearMin && storm.yr <= yearMax) {
+    if (
+      (storm.yr >= yearMin && storm.yr <= yearMax) && // Check year range
+      (selectedState === 'ALL' || storm.st === selectedState) // Check selected state
+    ) {
       // line between the starting and ending points
       // Most of this is straight from the leaflet documentation:
       // https://leafletjs.com/reference.html#polyline
@@ -260,7 +268,11 @@ function addStorms(yearMin = 2022, yearMax = 2022) {
       ];
 
       const polySortCheckbox = document.getElementById('disablePolylineCheckbox');
-      if (!document.getElementById('disablePolylineCheckbox').checked) {
+      // What this check is doing is to make sure we have an ending elat, elon, and that our polyline is not disabled. Because:
+      // 1. We don't want to draw a polyline if the user doesn't want it.
+      // 2. A lot of this data does not have ending coordinates which bugs out the polyline. In this case we only mark the start of the storm.
+      if (!document.getElementById('disablePolylineCheckbox').checked 
+      && (storm.elat !== '0.0' && storm.elat !== '') && (storm.elon !== '0.0' && storm.elon !== '')) {
 
         // Create the polyline and add it to the map
         const polyline = L.polyline(lineCoordinates, { color: 'red', weight: 2 }).addTo(map);
@@ -273,7 +285,7 @@ function addStorms(yearMin = 2022, yearMax = 2022) {
         // we have not used yet.
         startCircle.bindPopup(`Start of Storm ${storm.om}`);
         endCircle.bindPopup(`End of Storm ${storm.om}`);
-        polyline.bindPopup(`Storm ${storm.om}`);
+        polyline.bindPopup(`Storm ${storm.om} Year ${storm.yr}`);
 
         // Thicken the polyline on zoom. GPT and Stackoverflow helped here.
         map.on('zoomend', function () {
@@ -286,7 +298,7 @@ function addStorms(yearMin = 2022, yearMax = 2022) {
       } else {
         // Draw the storms w/o the polyline
         const startCircle = L.circleMarker([storm.slat, storm.slon], { color: 'red', weight: 2, radius: 1 }).addTo(map);
-        console.log('Drawing without poly');
+        // console.log('Drawing without poly');
       }
     }
   });
@@ -351,6 +363,10 @@ resetButton.addEventListener('click', function () {
   alphaSortCheckbox.checked = false;
   polySortCheckbox.checked = false;
 
+  // Fix the dropdown
+  selectedState = 'OK';
+  stateFilter.value = 'OK';
+
   // Re-render the default chart and the map
   toggleSorting(sortCheckbox);
 
@@ -363,9 +379,7 @@ resetButton.addEventListener('click', function () {
   map.setView([35.481918, -97.508469], 7);
 });
 
-function populateStateDropdown() {
-  const stateFilter = document.getElementById('stateFilter');
-  
+function populateStateDropdown() {  
   // option for ALL states with ALL as default.
   const allOption = document.createElement('option');
   allOption.value = 'ALL';
@@ -379,12 +393,23 @@ function populateStateDropdown() {
     option.text = fullName;
     option.value = abbreviation;
     stateFilter.appendChild(option);
+
+    // GPT helped also with this if...
+    if (abbreviation === 'OK') {
+      option.selected = true;
+    }
   });
 }
 
 stateFilter.addEventListener('change', function() {
-  const selectedValue = stateFilter.value;
-  console.log('Selected value:', selectedValue);
+  selectedState = stateFilter.value;
+
+  // Clear the old map
+  map.eachLayer(function (layer) {
+    map.removeLayer(layer);
+  });
+
+  renderMap(rangeInput.value, rangeUpperInput.value);
 });
 
 // Call the function to populate the state dropdown
