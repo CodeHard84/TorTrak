@@ -57,6 +57,15 @@
       </div>
       <div id="mapFilters">
         <h2>Map Filters:</h2>
+        <div id="mapProviderDiv">
+          <label for="mapProvider">Map Provider:</label>
+          <select id="mapProvider">
+            <option value="openStreetMap" selected>OpenStreetMap</option>
+            <option value="stamen">Stamen Terrain</option>
+            <option value="stamenToner">Stamen Toner</option>
+            <option value="cartoDB">CartoDB</option>
+          </select>
+        </div>
         <div>
           <input type="checkbox" id="disablePolylineCheckbox" onchange="togglePolyline()">
           <label for="disablePolylineCheckbox">Disable Polyline</label>

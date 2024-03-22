@@ -11,8 +11,11 @@ let polyline;
 const rangeInput = document.getElementById('range');
 const rangeUpperInput = document.getElementById('rangeUpper');
 const stateFilter = document.getElementById('stateFilter');
+const providerDrop = document.getElementById('mapProvider');
 // I have to set this from keeping ALL the storms from rendering.
 let selectedState = 'OK';
+let yearMin = rangeInput.value;
+let yearMax = rangeUpperInput.value;
 
 
 // Going to model this function after the function presented by MDN at:
@@ -101,7 +104,7 @@ function toggleSorting(checkbox) {
     stormCountsPerState = getTotalStormsPerState(stormsArray, false);
   }
 
-  renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Storms');
+  renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Tornadoes');
 }
 
 // Function to sort states alphabetically
@@ -117,7 +120,7 @@ function sortStatesAlphabetically(stormsArray) {
 }
 
 // Function to calculate total storms per state
-function getTotalStormsPerState(stormsArray, sorted = false, yearMin = 2022, yearMax = 2022) {
+function getTotalStormsPerState(stormsArray, sorted = false) {
   // Going to use reduce to count the storms per state.
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
   const stormCounts = stormsArray.reduce((total, storm) => {
@@ -145,7 +148,7 @@ function getTotalStormsPerState(stormsArray, sorted = false, yearMin = 2022, yea
 
 // renderBarChart takes key value such as: state: numberofstorms
 // in one object.
-function renderBarChart(kvp, canvasID, dataLabel, yearMin = 2022, yearMax = 2022) {
+function renderBarChart(kvp, canvasID, dataLabel) {
   // kvp - Key Value Pair (Such as OK: 100)
   // canvasID - The ID of the canvas in HTML
   // dataLabel - The label explaining the contents in the bar chart
@@ -215,7 +218,8 @@ loadStorms().then(array => {
 });
 
 
-function renderMap(yearMin = 2022, yearMax = 2022) {
+function renderMap(provider = 'openStreetMap', yearMin = 2022, yearMax = 2022) {
+  const providerURL = mapProviders[provider];
   // Clear the existing tile layer if it exists
   if (tileLayer) {
     map.removeLayer(tileLayer);
@@ -224,7 +228,7 @@ function renderMap(yearMin = 2022, yearMax = 2022) {
   const customTileLayer =
     // I made a custom layer to be able to change to a new tile provider in
     // the future.
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer(providerURL, {
       maxZoom: 19,
       tileSize: 256,
       zoomOffset: 0,
@@ -236,6 +240,21 @@ function renderMap(yearMin = 2022, yearMax = 2022) {
   addStorms(yearMin, yearMax);
 }
 
+// Event listener for the map provider dropdown change
+const mapProviderDropdown = document.getElementById('mapProvider');
+mapProviderDropdown.addEventListener('change', function() {
+  const selectedProvider = this.value;
+
+  // Have to clear the old tiles
+  // map.eachLayer(function (layer) {
+  //   map.removeLayer(layer);
+  // });
+
+  // console.log('Selected Provider: ' + selectedProvider);
+
+  renderMap(selectedProvider, yearMin, yearMax);
+});
+
 function togglePolyline() {
   const polySortCheckbox = document.getElementById('disablePolylineCheckbox');
   const yearMin = rangeInput.value;
@@ -246,9 +265,9 @@ function togglePolyline() {
     map.eachLayer(function (layer) {
       map.removeLayer(layer);
     });
-    renderMap(yearMin, yearMax);
+    renderMap(providerDrop.value, yearMin, yearMax);
   } else {
-    renderMap(yearMin, yearMax);
+    renderMap(providerDrop.value, yearMin, yearMax);
   }
 }
 
@@ -322,8 +341,13 @@ document.addEventListener('DOMContentLoaded', function () {
       upperBoundInput.value = lowerBoundInput.value;
       rangeUpperInput.value = lowerBoundInput.value;
     }
+
+    yearMin = rangeInput.value;
+    yearMax = rangeUpperInput.value;
+
     // Redraw map with updated years
-    renderMap(parseInt(lowerBoundInput.value), parseInt(upperBoundInput.value));
+    toggleSorting();
+    renderMap(providerDrop.value, parseInt(lowerBoundInput.value), parseInt(upperBoundInput.value));
   });
 
   rangeUpperInput.addEventListener('input', function () {
@@ -333,8 +357,13 @@ document.addEventListener('DOMContentLoaded', function () {
       lowerBoundInput.value = upperBoundInput.value;
       rangeInput.value = upperBoundInput.value;
     }
+
+    yearMin = rangeInput.value;
+    yearMax = rangeUpperInput.value;
+
     // Redraw map with updated years
-    renderMap(parseInt(lowerBoundInput.value), parseInt(upperBoundInput.value));
+    toggleSorting();
+    renderMap(providerDrop.value, parseInt(lowerBoundInput.value), parseInt(upperBoundInput.value));
   });
 
   // Initialize values
@@ -348,6 +377,8 @@ resetButton.addEventListener('click', function () {
   // Reset year inputs
   rangeInput.value = 2022;
   rangeUpperInput.value = 2022;
+  yearMax = 2022;
+  yearMin = 2022;
 
   // Reset text boxes
   const lowerBoundInput = document.getElementById('lowerBound');
@@ -363,9 +394,12 @@ resetButton.addEventListener('click', function () {
   alphaSortCheckbox.checked = false;
   polySortCheckbox.checked = false;
 
-  // Fix the dropdown
+  // Fix the dropdowns
   selectedState = 'OK';
   stateFilter.value = 'OK';
+  providerDrop.value = 'openStreetMap';
+
+
 
   // Re-render the default chart and the map
   toggleSorting(sortCheckbox);
@@ -375,7 +409,7 @@ resetButton.addEventListener('click', function () {
     map.removeLayer(layer);
   });
 
-  renderMap(rangeInput.value, rangeUpperInput.value);
+  renderMap('openStreetMap', rangeInput.value, rangeUpperInput.value);
   map.setView([35.481918, -97.508469], 7);
 });
 
@@ -409,7 +443,7 @@ stateFilter.addEventListener('change', function() {
     map.removeLayer(layer);
   });
 
-  renderMap(rangeInput.value, rangeUpperInput.value);
+  renderMap(providerDrop.value, rangeInput.value, rangeUpperInput.value);
 });
 
 // Call the function to populate the state dropdown

@@ -158,6 +158,10 @@ p {
   color: #333;
 }
 
+#mapProviderDiv {
+  margin-bottom: 10px;
+}
+
 /* chart filters */
 #barChartFilter h2 {
   font-size: 20px;

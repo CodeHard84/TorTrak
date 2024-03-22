@@ -76,3 +76,66 @@ function buildFlagUrl (stateAbbr, size = 'w320') {
   return flagUrl;
 }
 
+// Added an object with all the state capitals and their coordinates. I am going to use this in several places
+// well worth the research.
+
+const stateCapitals = {
+  AL: { city: 'Montgomery', lat: 32.361538, lon: -86.279118 },
+  AK: { city: 'Juneau', lat: 58.301935, lon: -134.419740 },
+  AZ: { city: 'Phoenix', lat: 33.448457, lon: -112.073844 },
+  AR: { city: 'Little Rock', lat: 34.736009, lon: -92.331122 },
+  CA: { city: 'Sacramento', lat: 38.555605, lon: -121.468926 },
+  CO: { city: 'Denver', lat: 39.739227, lon: -104.984856 },
+  CT: { city: 'Hartford', lat: 41.767000, lon: -72.677000 },
+  DE: { city: 'Dover', lat: 39.161921, lon: -75.526755 },
+  FL: { city: 'Tallahassee', lat: 30.438118, lon: -84.281296 },
+  GA: { city: 'Atlanta', lat: 33.749027, lon: -84.388229 },
+  HI: { city: 'Honolulu', lat: 21.307442, lon: -157.857376 },
+  ID: { city: 'Boise', lat: 43.617775, lon: -116.199722 },
+  IL: { city: 'Springfield', lat: 39.798363, lon: -89.654961 },
+  IN: { city: 'Indianapolis', lat: 39.768402, lon: -86.158066 },
+  IA: { city: 'Des Moines', lat: 41.591087, lon: -93.603729 },
+  KS: { city: 'Topeka', lat: 39.049515, lon: -95.671736 },
+  KY: { city: 'Frankfort', lat: 38.186722, lon: -84.875374 },
+  LA: { city: 'Baton Rouge', lat: 30.458283, lon: -91.140320 },
+  ME: { city: 'Augusta', lat: 44.307167, lon: -69.781693 },
+  MD: { city: 'Annapolis', lat: 38.978764, lon: -76.490936 },
+  MA: { city: 'Boston', lat: 42.358162, lon: -71.063698 },
+  MI: { city: 'Lansing', lat: 42.733635, lon: -84.555328 },
+  MN: { city: 'St. Paul', lat: 44.955097, lon: -93.102211 },
+  MS: { city: 'Jackson', lat: 32.303848, lon: -90.182106 },
+  MO: { city: 'Jefferson City', lat: 38.572954, lon: -92.189283 },
+  MT: { city: 'Helena', lat: 46.595805, lon: -112.027031 },
+  NE: { city: 'Lincoln', lat: 40.813620, lon: -96.702595 },
+  NV: { city: 'Carson City', lat: 39.163914, lon: -119.766121 },
+  NH: { city: 'Concord', lat: 43.220093, lon: -71.549127 },
+  NJ: { city: 'Trenton', lat: 40.220596, lon: -74.769913 },
+  NM: { city: 'Santa Fe', lat: 35.682240, lon: -105.939728 },
+  NY: { city: 'Albany', lat: 42.652580, lon: -73.756233 },
+  NC: { city: 'Raleigh', lat: 35.780400, lon: -78.639100 },
+  ND: { city: 'Bismarck', lat: 46.820850, lon: -100.783318 },
+  OH: { city: 'Columbus', lat: 39.961346, lon: -82.999069 },
+  OK: { city: 'Oklahoma City', lat: 35.467560, lon: -97.516428 },
+  OR: { city: 'Salem', lat: 44.938461, lon: -123.030403 },
+  PA: { city: 'Harrisburg', lat: 40.264378, lon: -76.883598 },
+  RI: { city: 'Providence', lat: 41.823989, lon: -71.412834 },
+  SC: { city: 'Columbia', lat: 34.000710, lon: -81.034814 },
+  SD: { city: 'Pierre', lat: 44.367031, lon: -100.346405 },
+  TN: { city: 'Nashville', lat: 36.165890, lon: -86.784443 },
+  TX: { city: 'Austin', lat: 30.274670, lon: -97.740350 },
+  UT: { city: 'Salt Lake City', lat: 40.777477, lon: -111.888237 },
+  VT: { city: 'Montpelier', lat: 44.260399, lon: -72.575386 },
+  VA: { city: 'Richmond', lat: 37.540700, lon: -77.436000 },
+  WA: { city: 'Olympia', lat: 47.041700, lon: -122.895000 },
+  WV: { city: 'Charleston', lat: 38.349497, lon: -81.633294 },
+  WI: { city: 'Madison', lat: 43.074722, lon: -89.384444 },
+  WY: { city: 'Cheyenne', lat: 41.145548, lon: -104.802042 }
+};
+
+// Let the user pick a tile provider =)
+const mapProviders = {
+  openStreetMap: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  stamen: 'https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.png',
+  stamenToner: 'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png',
+  cartoDB: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+};
