@@ -176,8 +176,8 @@ p {
   color: #333;
 }
 
-#quickStatsDiv {
-  margin-top: 0px;
+#quickStatsDiv a {
+  text-decoration: none;
 }
 
 #stats {
@@ -207,10 +207,15 @@ p {
 }
 
 /* charts.html specific */
+.state-flag img {
+  justify-content: center;
+}
+
 .state-flag ul {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin-left: 25%;
+  margin-right: 25%;
 }
 
 .state-flag li {
@@ -225,6 +230,10 @@ p {
   vertical-align: middle;
 }
 
+.state-flag a {
+  text-decoration: none;
+}
+
 .state-columns {
   display: flex;
   padding: 60px;
@@ -237,6 +246,11 @@ p {
 
 #stateContainer {
   padding: 60px;
+  text-align: center;
+}
+
+#stateContainer img {
+  margin-bottom: 20px;
 }
 
 #faqContainer {

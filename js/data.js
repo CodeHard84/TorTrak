@@ -139,3 +139,66 @@ const mapProviders = {
   stamenToner: 'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png',
   cartoDB: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
 };
+
+// Load up the storms here so we can share with charts.js
+// Going to model this function after the function presented by MDN at:
+// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+async function loadStorms() {
+  const tmpStormsArray = [];
+
+  // GPT helped with fetching the JSON file.
+  // Comment one out depending on local or GH hosted.
+  // const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
+  const response = await fetch('data/output.json'); // <--- This is the ENTIRE request, which has more than just JSON.
+  const stormData = await response.json(); // <--- We only want the JSON, not the ENTIRE request body.
+
+  stormData.forEach(storm => {
+    // Going to make sure we don't have invalid states or data older than 1990. When I can
+    // use a database this will be an easy change to include all of the data.
+    // if (validStates.includes(storm.st) && storm.yr >= 1990) {
+    if (statesData[storm.st]) {
+      // Schema here: /data/SPC_severe_database_description.pdf
+      const stormObject = {
+        om: storm.om,
+        yr: storm.yr,
+        mo: storm.mo,
+        dy: storm.dy,
+        date: storm.date,
+        time: storm.time,
+        tz: storm.tz,
+        st: storm.st,
+        stf: storm.stf,
+        stn: storm.stn,
+        mag: storm.mag,
+        inj: storm.inj,
+        fat: storm.fat,
+        loss: storm.loss,
+        closs: storm.closs,
+        slat: storm.slat,
+        slon: storm.slon,
+        elat: storm.elat,
+        elon: storm.elon,
+        len: storm.len,
+        wid: storm.wid,
+        ns: storm.ns,
+        sn: storm.sn,
+        sg: storm.sg,
+        f1: storm.f1,
+        f2: storm.f2,
+        f3: storm.f3,
+        f4: storm.f4,
+        fc: storm.fc
+      };
+      tmpStormsArray.push(stormObject);
+    }
+  });
+  return tmpStormsArray;
+}
+
+// I have to build all the functions in here because stormsArray is a promise stormsArray is fully
+// resolved in the code below. Not sure if this is the best way, it is however the only way I know.
+// So essentially we are calling loadStorms then saying WAIT for the array to load up, hence no longer
+// a promise but the reality.
+
+let stormsArray = [];
+

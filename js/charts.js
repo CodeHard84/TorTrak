@@ -70,8 +70,7 @@ if (state) {
   const statesContainer = document.getElementById('statesContainer');
   statesContainer.innerHTML = '';
 
-  const stateContainer = document.getElementById('stateContainer');
-  stateContainer.innerHTML = 'I am ' + state + '.';
+  createStatesChartPage();
 
 } else {
   // No state variable passed in URL so make a list.
@@ -80,4 +79,35 @@ if (state) {
   statesContainer.innerHTML = '';
 
   createStatesList();
+}
+
+function createStatesChartPage() {
+  const stateContainer = document.getElementById('stateContainer');
+  const img = document.createElement('img');
+  const flagUrl = buildFlagUrl(state.toLowerCase(), 'w320');
+  img.src = flagUrl;
+  img.alt = state.fullName + ' Flag';
+  img.classList.add('state-flag-img');
+
+  // Append flag image to stateContainer
+  stateContainer.appendChild(img);
+
+  // State fact blurb
+  const stateStats = document.createElement('div'); // Create a new div for stateStats
+  stateStats.id = 'stateStats'; // Set the id of the stateStats div
+
+  const fullName = statesData[state].fullName;
+  const population = statesData[state].population;
+  const landmass = statesData[state].landmass;
+  const capital = stateCapitals[state].city;
+
+  // Test Stuff
+  console.log(stormsArray);
+
+  // Populate stateStats with HTML content
+  stateStats.innerHTML = `${fullName}, with a population of ${population.toLocaleString()} people and a landmass spanning ${landmass.toLocaleString()} square miles, 
+  is home to its capital, ${capital}.`;
+
+  // Append stateStats to stateContainer
+  stateContainer.appendChild(stateStats); // Append stateStats to stateContainer
 }
