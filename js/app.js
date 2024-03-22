@@ -17,6 +17,7 @@ let yearMax = rangeUpperInput.value;
 providerDrop.value = 'openStreetMap';
 let provider = providerDrop.value;
 
+
 // Check if a key exists in localStorage
 // TODO: Remove this function if we do not use LS.
 function isKeyInLocalStorage(key) {
