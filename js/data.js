@@ -225,6 +225,7 @@ loadStorms().then(array => {
       statesContainer.innerHTML = '';
 
       createStatesChartPage();
+      generateStormsChart(state);
 
     } else {
       // No state variable passed in URL so make a list.

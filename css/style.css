@@ -3,6 +3,7 @@ body {
   background-color: #f5f5f5;
   margin: 0;
   padding: 0;
+  font-size: large;
 }
 
 p {
@@ -255,4 +256,14 @@ p {
 
 #faqContainer {
   padding: 60px;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+#faqContainer h2 {
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  color: #333;
 }

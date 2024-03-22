@@ -60,14 +60,21 @@ function createStatesList() {
 
 function createStatesChartPage() {
   const stateContainer = document.getElementById('stateContainer');
+
+  // Create a new div for stateCharts
+  const stateCharts = document.createElement('div');
+  stateCharts.id = 'stateCharts';
+
+  // Append stateCharts to stateContainer
+  stateContainer.appendChild(stateCharts);
+
+  // Create and append flag image
   const img = document.createElement('img');
   const flagUrl = buildFlagUrl(state.toLowerCase(), 'w320');
   img.src = flagUrl;
   img.alt = state.fullName + ' Flag';
   img.classList.add('state-flag-img');
-
-  // Append flag image to stateContainer
-  stateContainer.appendChild(img);
+  stateCharts.appendChild(img);
 
   // State fact blurb
   const stateStats = document.createElement('div'); // Create a new div for stateStats
@@ -79,9 +86,52 @@ function createStatesChartPage() {
   const capital = stateCapitals[state].city;
 
   // Populate stateStats with HTML content
-  stateStats.innerHTML = `${fullName}, with a population of ${population.toLocaleString()} people and a landmass spanning ${landmass.toLocaleString()} square miles, 
-  is home to its capital, ${capital}.`;
+  stateStats.innerHTML = `${fullName}, with a population of ${population.toLocaleString()} people and a landmass spanning ${landmass.toLocaleString()} square miles, is home to its capital, ${capital}.`;
 
-  // Append stateStats to stateContainer
-  stateContainer.appendChild(stateStats); // Append stateStats to stateContainer
+  // Append stateStats to stateCharts
+  stateCharts.appendChild(stateStats);
+}
+
+function generateStormsChart(state) {
+  // GPT built most of this function.
+  const monthlyCounts = Array.from({ length: 12 }, () => 0); // Initialize an array to hold counts for each month
+  const months = 12;
+
+  // Filter storms for the specified state
+  const stateStorms = stormsArray.filter(storm => storm.st === state);
+
+  // Aggregate the storm counts for each month
+  stateStorms.forEach(storm => {
+    const monthIndex = parseInt(storm.mo, 10) - 1; // Convert month to zero-based index
+    monthlyCounts[monthIndex]++;
+  });
+
+  // Calculate the total number of storms for all months
+  const totalStorms = stateStorms.length;
+
+  // Calculate the average storms per month
+  const averageStormsPerMonth = monthlyCounts.map(count => count / totalStorms);
+
+  // Constructing the bar chart
+  const ctx = document.getElementById('monthlyAverages').getContext('2d');
+  const barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      datasets: [{
+        label: `Average Tornadoes per Month in ${state}`,
+        data: averageStormsPerMonth,
+        backgroundColor: '#FF6384',
+        borderColor: '#FF6384',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
 }
