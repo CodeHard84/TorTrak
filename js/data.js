@@ -142,6 +142,7 @@ const mapProviders = {
 // Going to model this function after the function presented by MDN at:
 // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 async function loadStorms() {
+  console.log('loadStorms invoked');
   const tmpStormsArray = [];
 
   // GPT helped with fetching the JSON file.
@@ -206,7 +207,7 @@ loadStorms().then(array => {
 
   // Render the first map only if the page is root or index.html this is the only hack I could think of...
   if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-    console.log(stormsArray);
+    console.log('index.html ' + stormsArray.length);
     let stormCountsPerState = getTotalStormsPerState(stormsArray);
     renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Tornadoes');
     renderMap(yearMin, yearMax);
@@ -216,6 +217,7 @@ loadStorms().then(array => {
     // Call the function to create the list of states with flags
     // If we have a state variable we don't need the columns
     // Retrieve state variable from URL
+    console.log('charts.html ' + stormsArray.length);
     const urlParams = new URLSearchParams(window.location.search); // GPT helped here
     state = urlParams.get('state'); // GPT helped here
 
