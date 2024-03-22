@@ -247,12 +247,23 @@ function renderMap(yearMin = 2022, yearMax = 2022) {
     if (storm.yr >= yearMin && storm.yr <= yearMax && storm.st === selectedState) {
       count++;
     } else {
-      if(storm.yr >= yearMin && storm.yr <= yearMax && 'ALL' === selectedState) {
+      if (storm.yr >= yearMin && storm.yr <= yearMax && 'ALL' === selectedState) {
         count++;
       }
     }
   }
   document.getElementById('stats').innerHTML = `You're Viewing: ${count.toLocaleString()}/${stormsArray.length.toLocaleString()} Tornadoes`;
+  if (selectedState !== 'ALL') {
+    const fullName = statesData[selectedState].fullName;
+    const population = statesData[selectedState].population;
+    const landmass = statesData[selectedState].landmass;
+    const capital = stateCapitals[selectedState].city;
+    document.getElementById('stateStats').innerHTML = `${fullName}, with a population of ${population.toLocaleString()} people and a landmass spanning ${landmass.toLocaleString()} 
+   square miles, is home to its capital, ${capital}.`;
+  } else {
+    document.getElementById('stateStats').innerHTML = `The United States boasts a population of 333,271,411 and covers a vast landmass spanning 3,119,884 square miles. 
+    Its capital, Washington, D.C., stands as a symbol of its political and cultural significance.`;
+  }
 }
 
 // Event listener for the map provider dropdown change
