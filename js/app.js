@@ -252,7 +252,7 @@ function renderMap(yearMin = 2022, yearMax = 2022) {
       }
     }
   }
-  document.getElementById('stats').innerHTML = `You're Viewing: ${count}/${stormsArray.length} storms`;
+  document.getElementById('stats').innerHTML = `You're Viewing: ${count.toLocaleString()}/${stormsArray.length.toLocaleString()} Tornadoes`;
 }
 
 // Event listener for the map provider dropdown change
