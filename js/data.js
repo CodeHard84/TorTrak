@@ -211,6 +211,7 @@ loadStorms().then(array => {
     let stormCountsPerState = getTotalStormsPerState(stormsArray);
     renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Tornadoes');
     renderMap(yearMin, yearMax);
+    resetButton.dispatchEvent(new Event('click'));
   }
   if (window.location.pathname === '/charts.html') {
     // Call the function to create the list of states with flags
