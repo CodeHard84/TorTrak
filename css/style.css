@@ -1,5 +1,12 @@
 body {
+  font-family: 'Roboto', sans-serif;
   background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin-bottom: 10px;
 }
 
 /* Nav stuff */
@@ -98,14 +105,71 @@ body {
 #filters {
   width: 300px;
   height: 580px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-left: 20px;
   margin-right: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* Don't know if I want it rounded or not. */
+  /* border-radius: 10px; */
 }
 
-#mapFilters {
-  margin-bottom: 50px;
+/* shared filters */
+/* GPT wrote the code for the slider CSS */
+#sharedFilters h2 {
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+#yearSelector {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.yearInputContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.yearInputContainer label {
+  margin-bottom: 5px;
+}
+
+.yearInputContainer input[type="range"],
+.yearInputContainer input[type="text"] {
+  width: 80%; /* Adjust width as needed */
+  margin-bottom: 10px;
+}
+
+.yearInputContainer input[type="text"] {
+  width: 75%; /* Adjust width as needed */
+}
+
+/* map filters */
+#mapFilters h2 {
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* chart filters */
+#barChartFilter h2 {
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+#barChartFilter label {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #333;
 }
 
 /* index.html chart */

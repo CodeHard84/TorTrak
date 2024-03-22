@@ -4,6 +4,9 @@
 let stormsArray;
 var map = L.map('stormsMap', { attributionControl: false }).setView([35.481918, -97.508469], 7);
 let tileLayer;
+let polyline;
+const rangeInput = document.getElementById('range');
+const rangeUpperInput = document.getElementById('rangeUpper');
 
 
 // Going to model this function after the function presented by MDN at:
@@ -68,11 +71,43 @@ function isKeyInLocalStorage(key) {
 }
 
 // Function to toggle sorting
-function toggleSorting() {
-  const sorted = document.getElementById('sortCheckbox').checked;
-  // Re-render the bar chart with sorted or unsorted data based on user selection
-  const stormCountsPerState = getTotalStormsPerState(stormsArray, sorted);
+function toggleSorting(checkbox) {
+  const sortCheckbox = document.getElementById('sortCheckbox');
+  const alphaSortCheckbox = document.getElementById('alphaSortCheckbox');
+
+  // Ensure only one checkbox is checked at a time
+  if (checkbox === sortCheckbox && sortCheckbox.checked) {
+    alphaSortCheckbox.checked = false;
+  } else if (checkbox === alphaSortCheckbox && alphaSortCheckbox.checked) {
+    sortCheckbox.checked = false;
+  }
+
+  // Re-render the bar chart based on the selected sorting option
+  const sorted = sortCheckbox.checked;
+  const alphaSorted = alphaSortCheckbox.checked;
+
+  let stormCountsPerState;
+  if (sorted) {
+    stormCountsPerState = getTotalStormsPerState(stormsArray, true);
+  } else if (alphaSorted) {
+    stormCountsPerState = sortStatesAlphabetically(stormsArray);
+  } else {
+    stormCountsPerState = getTotalStormsPerState(stormsArray, false);
+  }
+
   renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Storms');
+}
+
+// Function to sort states alphabetically
+function sortStatesAlphabetically(stormsArray) {
+  const sortedStates = {};
+  const states = Object.keys(getTotalStormsPerState(stormsArray, false)).sort();
+
+  states.forEach(state => {
+    sortedStates[state] = stormsArray.filter(storm => storm.st === state).length;
+  });
+
+  return sortedStates;
 }
 
 // Function to calculate total storms per state
@@ -104,7 +139,7 @@ function getTotalStormsPerState(stormsArray, sorted = false, yearMin = 2022, yea
 
 // renderBarChart takes key value such as: state: numberofstorms
 // in one object.
-function renderBarChart(kvp, canvasID, dataLabel) {
+function renderBarChart(kvp, canvasID, dataLabel, yearMin = 2022, yearMax = 2022) {
   // kvp - Key Value Pair (Such as OK: 100)
   // canvasID - The ID of the canvas in HTML
   // dataLabel - The label explaining the contents in the bar chart
@@ -118,7 +153,7 @@ function renderBarChart(kvp, canvasID, dataLabel) {
   const chartData = {
     labels: Object.keys(kvp),
     datasets: [{
-      label: dataLabel,
+      label: dataLabel + ' from ' + yearMin + ' to ' + yearMax,
       data: Object.values(kvp),
       backgroundColor: '#FF6384',
       borderColor: '#FF6384',
@@ -180,19 +215,35 @@ function renderMap(yearMin = 2022, yearMax = 2022) {
     map.removeLayer(tileLayer);
   }
   // Map stuff
-  const customTileLayer = 
-  // I made a custom layer to be able to change to a new tile provider in
-  // the future.
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    tileSize: 256,
-    zoomOffset: 0,
-  });
+  const customTileLayer =
+    // I made a custom layer to be able to change to a new tile provider in
+    // the future.
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      tileSize: 256,
+      zoomOffset: 0,
+    });
 
   // Add the custom tile layer to the map
   customTileLayer.addTo(map);
 
   addStorms(yearMin, yearMax);
+}
+
+function togglePolyline() {
+  const polySortCheckbox = document.getElementById('disablePolylineCheckbox');
+  const yearMin = rangeInput.value;
+  const yearMax = rangeUpperInput.value;
+  if (document.getElementById('disablePolylineCheckbox').checked) {
+    // Had help here: 
+    // https://stackoverflow.com/questions/45185205/leaflet-remove-all-map-layers-before-adding-a-new-one
+    map.eachLayer(function (layer) {
+      map.removeLayer(layer);
+    });
+    renderMap(yearMin, yearMax);
+  } else {
+    renderMap(yearMin, yearMax);
+  }
 }
 
 function addStorms(yearMin = 2022, yearMax = 2022) {
@@ -206,30 +257,98 @@ function addStorms(yearMin = 2022, yearMax = 2022) {
         [storm.elat, storm.elon]  // Ending point
       ];
 
-      // Create the polyline and add it to the map
-      const polyline = L.polyline(lineCoordinates, { color: 'red', weight: 2 }).addTo(map);
+      const polySortCheckbox = document.getElementById('disablePolylineCheckbox');
+      if (!document.getElementById('disablePolylineCheckbox').checked) {
 
-      const startCircle = L.circleMarker([storm.slat, storm.slon], { color: 'red', weight: 2, radius: 1 }).addTo(map);
-      const endCircle = L.circleMarker([storm.elat, storm.elon], { color: 'blue', weight: 2, radius: 1 }).addTo(map);
+        // Create the polyline and add it to the map
+        const polyline = L.polyline(lineCoordinates, { color: 'red', weight: 2 }).addTo(map);
 
-      // Popup Info
-      // This is where I will add all of the info from our JSON file that
-      // we have not used yet.
-      startCircle.bindPopup(`Start of Storm ${storm.om}`);
-      endCircle.bindPopup(`End of Storm ${storm.om}`);
-      polyline.bindPopup(`Storm ${storm.om}`);
+        const startCircle = L.circleMarker([storm.slat, storm.slon], { color: 'red', weight: 2, radius: 1 }).addTo(map);
+        const endCircle = L.circleMarker([storm.elat, storm.elon], { color: 'blue', weight: 2, radius: 1 }).addTo(map);
 
-      // Thicken the polyline on zoom. GPT and Stackoverflow helped here.
-      map.on('zoomend', function () {
-        const zoomLevel = map.getZoom();
-        // Adjust polyline weight based on zoom level
-        polyline.setStyle({ weight: zoomLevel <= 10 ? 1 : zoomLevel });
-        startCircle.setStyle({ weight: zoomLevel <= 10 ? 1 : zoomLevel });
-        endCircle.setStyle({ weight: zoomLevel <= 10 ? 1 : zoomLevel });
-      });
+        // Popup Info
+        // This is where I will add all of the info from our JSON file that
+        // we have not used yet.
+        startCircle.bindPopup(`Start of Storm ${storm.om}`);
+        endCircle.bindPopup(`End of Storm ${storm.om}`);
+        polyline.bindPopup(`Storm ${storm.om}`);
+
+        // Thicken the polyline on zoom. GPT and Stackoverflow helped here.
+        map.on('zoomend', function () {
+          const zoomLevel = map.getZoom();
+          // Adjust polyline weight based on zoom level
+          polyline.setStyle({ weight: zoomLevel <= 10 ? 1 : zoomLevel });
+          startCircle.setStyle({ weight: zoomLevel <= 10 ? 1 : zoomLevel });
+          endCircle.setStyle({ weight: zoomLevel <= 10 ? 1 : zoomLevel });
+        });
+      } else {
+        // Draw the storms w/o the polyline
+        const startCircle = L.circleMarker([storm.slat, storm.slon], { color: 'red', weight: 2, radius: 1 }).addTo(map);
+        console.log('Drawing without poly');
+      }
     }
   });
 }
 
 // Test the flag builder
 // console.log(statesData.buildFlagUrl('OK', 'w40'));
+
+// Filters
+// GPT wrote all of this slider logic using my ideas.
+document.addEventListener('DOMContentLoaded', function () {
+  const lowerBoundInput = document.getElementById('lowerBound');
+  const upperBoundInput = document.getElementById('upperBound');
+  const rangeInput = document.getElementById('range');
+  const rangeUpperInput = document.getElementById('rangeUpper');
+
+  rangeInput.addEventListener('input', function () {
+    lowerBoundInput.value = this.value;
+    // Ensure lower bound does not exceed upper bound
+    if (parseInt(lowerBoundInput.value) > parseInt(upperBoundInput.value)) {
+      upperBoundInput.value = lowerBoundInput.value;
+      rangeUpperInput.value = lowerBoundInput.value;
+    }
+  });
+
+  rangeUpperInput.addEventListener('input', function () {
+    upperBoundInput.value = this.value;
+    // Ensure upper bound does not go below lower bound
+    if (parseInt(upperBoundInput.value) < parseInt(lowerBoundInput.value)) {
+      lowerBoundInput.value = upperBoundInput.value;
+      rangeInput.value = upperBoundInput.value;
+    }
+  });
+
+  // Initialize values
+  lowerBoundInput.value = rangeInput.value;
+  upperBoundInput.value = rangeUpperInput.value;
+});
+
+// reset button
+const resetButton = document.getElementById('resetButton');
+resetButton.addEventListener('click', function () {
+  // Reset year inputs
+  rangeInput.value = 2022;
+  rangeUpperInput.value = 2022;
+
+  // Reset text boxes
+  const lowerBoundInput = document.getElementById('lowerBound');
+  const upperBoundInput = document.getElementById('upperBound');
+  lowerBoundInput.value = '2022';
+  upperBoundInput.value = '2022';
+
+  // Reset checkbox states
+  const sortCheckbox = document.getElementById('sortCheckbox');
+  const alphaSortCheckbox = document.getElementById('alphaSortCheckbox');
+  const polySortCheckbox = document.getElementById('disablePolylineCheckbox');
+  sortCheckbox.checked = false;
+  alphaSortCheckbox.checked = false;
+  polySortCheckbox.checked = false;
+
+  // Re-render the default chart and the map
+  toggleSorting(sortCheckbox);
+
+  // Reset map and then recenter it
+  renderMap();
+  map.setView([35.481918, -97.508469], 7);
+});
