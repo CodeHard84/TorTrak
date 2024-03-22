@@ -206,14 +206,15 @@ loadStorms().then(array => {
   stormsArray = array;
 
   // Render the first map only if the page is root or index.html this is the only hack I could think of...
-  if (window.location.pathname === '/TorTrak' || window.location.pathname === '/TorTrak/index.html') {
+  // TODO: Fix this hack
+  if (window.location.pathname === '/TorTrak' || window.location.pathname === '/TorTrak/index.html' || window.location.pathname === '/' || window.location.pathname === '/index.html') {
     console.log('index.html ' + stormsArray.length);
     let stormCountsPerState = getTotalStormsPerState(stormsArray);
     renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Tornadoes');
     renderMap(yearMin, yearMax);
     // resetButton.dispatchEvent(new Event('click'));
   }
-  if (window.location.pathname === '/TorTrak/charts.html') {
+  if (window.location.pathname === '/TorTrak/charts.html' || window.location.pathname === '/charts.html') {
     // Call the function to create the list of states with flags
     // If we have a state variable we don't need the columns
     // Retrieve state variable from URL
