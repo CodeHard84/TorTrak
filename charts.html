@@ -6,17 +6,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
-  <title>Charts</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Faster+One&display=swap" rel="stylesheet">
+  <title>TorTrak - Charts</title>
 </head>
 
 <body>
 
+  <nav class="topNav">
+    <div class="navLogo">
+      <a href="index.html">
+        <img src="img/lognobg.png" class="navImg" />
+      </a>
+    </div>
+    <div class="navSlogan"><a href="index.html"><span id="tor">Tor</span><span id="trak">Trak</a></span></div>
+    <div class="navLinks">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="charts.html">Charts</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div id="mainDiv">
   <div id="statesContainer" class="state-flag"></div>
+  <div id="stateContainer" class="state-charts"></div>
+  <div id="chart"><canvas id="monthlyAverages" width="800" height="100"></canvas></div>
+  </div>
 
 </body>
+<script src="js/data.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
-<script src="js/data.js"></script>
 <script src="js/charts.js"></script>
-
 </html>

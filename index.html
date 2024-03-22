@@ -8,23 +8,90 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Faster+One&display=swap" rel="stylesheet">
   <title>TorTrak</title>
 </head>
 
 <body>
 
-  <nav>
-    <ul>
-      <li><a href="#home">Home</a></li>
-      <li><a href="#charts">Charts</a></li>
-      <li><a href="#FAQ">FAQ</a></li>
-    </ul>
+  <nav class="topNav">
+    <div class="navLogo">
+      <a href="index.html">
+        <img src="img/lognobg.png" class="navImg" />
+      </a>
+    </div>
+    <div class="navSlogan"><a href="index.html"><span id="tor">Tor</span><span id="trak">Trak</a></span></div>
+    <div class="navLinks">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="charts.html">Charts</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
   </nav>
 
-  <div id="stormsMap"></div>
-  <canvas id="stormsChart" width="800" height="100"></canvas>
-  <label for="sortCheckbox">Sort storms by greatest to least:</label>
-  <input type="checkbox" id="sortCheckbox" onchange="toggleSorting()">
+  <div class="map-container">
+    <div id="stormsMap"></div>
+    <div id="filters">
+      <div id="sharedFilters">
+        <h2>Shared Filters:</h2>
+        <div id="yearSelector">
+          <div class="yearInputContainer">
+            <label for="range">Min Year:</label>
+            <input type="range" id="range" name="range" min="1950" max="2022" value="2022">
+            <input type="text" id="lowerBound" readonly>
+          </div>
+          <div class="yearInputContainer">
+            <label for="rangeUpper">Max Year:</label>
+            <input type="range" id="rangeUpper" name="range" min="1950" max="2022" value="2022">
+            <input type="text" id="upperBound" readonly>
+          </div>
+        </div>
+        <div id="filterBox">
+          <label for="stateFilter">Select State:</label>
+          <select id="stateFilter">
+          </select>
+        </div>
+      </div>
+      <div id="mapFilters">
+        <h2>Map Filters:</h2>
+        <div id="mapProviderDiv">
+          <label for="mapProvider">Map Provider:</label>
+          <select id="mapProvider">
+            <option value="openStreetMap" selected>OpenStreetMap</option>
+            <option value="stamen">Stamen Terrain</option>
+            <option value="stamenToner">Stamen Toner</option>
+            <option value="cartoDB">CartoDB</option>
+          </select>
+        </div>
+        <div>
+          <input type="checkbox" id="disablePolylineCheckbox" onchange="togglePolyline()">
+          <label for="disablePolylineCheckbox">Disable Polyline</label>
+        </div>
+      </div>
+      <div id="barChartFilter" class="checkbox-container">
+        <h2>Chart Filters:</h2>
+        <div>
+          <input type="checkbox" id="sortCheckbox" onchange="toggleSorting(this)">
+          <label for="sortCheckbox">Sort States by Count</label>
+        </div>
+        <div>
+          <input type="checkbox" id="alphaSortCheckbox" onchange="toggleSorting(this)">
+          <label for="alphaSortCheckbox">Sort States Alphabetically</label>
+        </div>
+        <button id="resetButton">Reset to Default</button>
+        <div id="quickStatsDiv">
+          <h2>Quick Stats:</h2>
+          <p id="stats"></p>
+          <p id="stateStats"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="stormsChartCanvas" width="800" height="100"></canvas>
 </body>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>

@@ -70,9 +70,171 @@ const statesData = {
 // Function specific to this object
 
 // Available flag sizes w20, w40, w80, w160, w320, w640, w1280, w2560
-function buildFlagUrl (stateAbbr, size = 'w320') {
+function buildFlagUrl(stateAbbr, size = 'w320') {
   const lowerAbbr = stateAbbr.toLowerCase(); // Flagpedia requires lowercase abbreviation.
   const flagUrl = `https://flagcdn.com/${size}/us-${lowerAbbr}.png`;
   return flagUrl;
 }
 
+// Added an object with all the state capitals and their coordinates. I am going to use this in several places
+// well worth the research.
+
+const stateCapitals = {
+  AL: { city: 'Montgomery', lat: 32.361538, lon: -86.279118 },
+  AK: { city: 'Juneau', lat: 58.301935, lon: -134.419740 },
+  AZ: { city: 'Phoenix', lat: 33.448457, lon: -112.073844 },
+  AR: { city: 'Little Rock', lat: 34.736009, lon: -92.331122 },
+  CA: { city: 'Sacramento', lat: 38.555605, lon: -121.468926 },
+  CO: { city: 'Denver', lat: 39.739227, lon: -104.984856 },
+  CT: { city: 'Hartford', lat: 41.767000, lon: -72.677000 },
+  DE: { city: 'Dover', lat: 39.161921, lon: -75.526755 },
+  FL: { city: 'Tallahassee', lat: 30.438118, lon: -84.281296 },
+  GA: { city: 'Atlanta', lat: 33.749027, lon: -84.388229 },
+  HI: { city: 'Honolulu', lat: 21.307442, lon: -157.857376 },
+  ID: { city: 'Boise', lat: 43.617775, lon: -116.199722 },
+  IL: { city: 'Springfield', lat: 39.798363, lon: -89.654961 },
+  IN: { city: 'Indianapolis', lat: 39.768402, lon: -86.158066 },
+  IA: { city: 'Des Moines', lat: 41.591087, lon: -93.603729 },
+  KS: { city: 'Topeka', lat: 39.049515, lon: -95.671736 },
+  KY: { city: 'Frankfort', lat: 38.186722, lon: -84.875374 },
+  LA: { city: 'Baton Rouge', lat: 30.458283, lon: -91.140320 },
+  ME: { city: 'Augusta', lat: 44.307167, lon: -69.781693 },
+  MD: { city: 'Annapolis', lat: 38.978764, lon: -76.490936 },
+  MA: { city: 'Boston', lat: 42.358162, lon: -71.063698 },
+  MI: { city: 'Lansing', lat: 42.733635, lon: -84.555328 },
+  MN: { city: 'St. Paul', lat: 44.955097, lon: -93.102211 },
+  MS: { city: 'Jackson', lat: 32.303848, lon: -90.182106 },
+  MO: { city: 'Jefferson City', lat: 38.572954, lon: -92.189283 },
+  MT: { city: 'Helena', lat: 46.595805, lon: -112.027031 },
+  NE: { city: 'Lincoln', lat: 40.813620, lon: -96.702595 },
+  NV: { city: 'Carson City', lat: 39.163914, lon: -119.766121 },
+  NH: { city: 'Concord', lat: 43.220093, lon: -71.549127 },
+  NJ: { city: 'Trenton', lat: 40.220596, lon: -74.769913 },
+  NM: { city: 'Santa Fe', lat: 35.682240, lon: -105.939728 },
+  NY: { city: 'Albany', lat: 42.652580, lon: -73.756233 },
+  NC: { city: 'Raleigh', lat: 35.780400, lon: -78.639100 },
+  ND: { city: 'Bismarck', lat: 46.820850, lon: -100.783318 },
+  OH: { city: 'Columbus', lat: 39.961346, lon: -82.999069 },
+  OK: { city: 'Oklahoma City', lat: 35.467560, lon: -97.516428 },
+  OR: { city: 'Salem', lat: 44.938461, lon: -123.030403 },
+  PA: { city: 'Harrisburg', lat: 40.264378, lon: -76.883598 },
+  RI: { city: 'Providence', lat: 41.823989, lon: -71.412834 },
+  SC: { city: 'Columbia', lat: 34.000710, lon: -81.034814 },
+  SD: { city: 'Pierre', lat: 44.367031, lon: -100.346405 },
+  TN: { city: 'Nashville', lat: 36.165890, lon: -86.784443 },
+  TX: { city: 'Austin', lat: 30.274670, lon: -97.740350 },
+  UT: { city: 'Salt Lake City', lat: 40.777477, lon: -111.888237 },
+  VT: { city: 'Montpelier', lat: 44.260399, lon: -72.575386 },
+  VA: { city: 'Richmond', lat: 37.540700, lon: -77.436000 },
+  WA: { city: 'Olympia', lat: 47.041700, lon: -122.895000 },
+  WV: { city: 'Charleston', lat: 38.349497, lon: -81.633294 },
+  WI: { city: 'Madison', lat: 43.074722, lon: -89.384444 },
+  WY: { city: 'Cheyenne', lat: 41.145548, lon: -104.802042 }
+};
+
+// Let the user pick a tile provider =)
+const mapProviders = {
+  openStreetMap: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  stamen: 'https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.png',
+  stamenToner: 'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png',
+  cartoDB: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+};
+
+// Load up the storms here so we can share with charts.js
+// Going to model this function after the function presented by MDN at:
+// https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+async function loadStorms() {
+  const tmpStormsArray = [];
+
+  // GPT helped with fetching the JSON file.
+  // Comment one out depending on local or GH hosted.
+  // const response = await fetch('https://codehard84.github.io/TorTrak/data/output.json');
+  const response = await fetch('data/output.json'); // <--- This is the ENTIRE request, which has more than just JSON.
+  const stormData = await response.json(); // <--- We only want the JSON, not the ENTIRE request body.
+
+  stormData.forEach(storm => {
+    // Going to make sure we don't have invalid states or data older than 1990. When I can
+    // use a database this will be an easy change to include all of the data.
+    // if (validStates.includes(storm.st) && storm.yr >= 1990) {
+    if (statesData[storm.st]) {
+      // Schema here: /data/SPC_severe_database_description.pdf
+      const stormObject = {
+        om: storm.om,
+        yr: storm.yr,
+        mo: storm.mo,
+        dy: storm.dy,
+        date: storm.date,
+        time: storm.time,
+        tz: storm.tz,
+        st: storm.st,
+        stf: storm.stf,
+        stn: storm.stn,
+        mag: storm.mag,
+        inj: storm.inj,
+        fat: storm.fat,
+        loss: storm.loss,
+        closs: storm.closs,
+        slat: storm.slat,
+        slon: storm.slon,
+        elat: storm.elat,
+        elon: storm.elon,
+        len: storm.len,
+        wid: storm.wid,
+        ns: storm.ns,
+        sn: storm.sn,
+        sg: storm.sg,
+        f1: storm.f1,
+        f2: storm.f2,
+        f3: storm.f3,
+        f4: storm.f4,
+        fc: storm.fc
+      };
+      tmpStormsArray.push(stormObject);
+    }
+  });
+  return tmpStormsArray;
+}
+
+// I have to build all the functions in here because stormsArray is a promise stormsArray is fully
+// resolved in the code below. Not sure if this is the best way, it is however the only way I know.
+// So essentially we are calling loadStorms then saying WAIT for the array to load up, hence no longer
+// a promise but the reality.
+
+let stormsArray = [];
+let state;
+
+loadStorms().then(array => {
+  stormsArray = array;
+
+  // Render the first map only if the page is root or index.html this is the only hack I could think of...
+  if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+    let stormCountsPerState = getTotalStormsPerState(stormsArray);
+    renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Tornadoes');
+    renderMap(yearMin, yearMax);
+  }
+  if (window.location.pathname === '/charts.html') {
+    // Call the function to create the list of states with flags
+    // If we have a state variable we don't need the columns
+    // Retrieve state variable from URL
+    const urlParams = new URLSearchParams(window.location.search); // GPT helped here
+    state = urlParams.get('state'); // GPT helped here
+
+    if (state) {
+      // We have a state variable generate stuff for the state.
+      const statesContainer = document.getElementById('statesContainer');
+      statesContainer.innerHTML = '';
+
+      createStatesChartPage();
+      generateStormsChart(state);
+
+    } else {
+      // No state variable passed in URL so make a list.
+
+      const statesContainer = document.getElementById('statesContainer');
+      statesContainer.innerHTML = '';
+
+      createStatesList();
+    }
+
+  }
+});

@@ -1,43 +1,222 @@
-/* Nav stuff */
-nav {
-  background-color: #333;
-  color: white;
-  padding: 10px;
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  font-size: large;
 }
 
-ul {
+p {
+  margin-bottom: 10px;
+}
+
+/* Nav stuff */
+.topNav {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topNav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-li {
-  float: left;
+.topNav li {
+  display: inline;
+  font-family: "Staatliches", sans-serif;
+  font-weight: bold;
+  font-style: normal;
 }
 
-li a {
-  display: block;
-  color: white;
-  text-align: center;
+.topNav li a {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px; 
+  color: #333;
+  text-decoration: none; 
   padding: 14px 16px;
+}
+
+/* Add pipe separator between links */
+.topNav li:not(:last-child) {
+  border-right: 1px solid #999;
+  margin-right: 10px;
+}
+
+.topNav li a:hover {
+  background-color: #ddd;
+}
+
+.navLogo {
+  position: absolute;
+  left: 60px;
+  top: 10px;
+  z-index: 500;
+}
+
+.navImg {
+  max-width: 180px;
+  max-height: 90px;
+  margin-right: 10px;
+}
+
+#tor {
+  margin-left: 120px;
+  color: #333;
+  font-family: "Faster One", system-ui;
+  font-weight: 400;
+  font-size: 60px;
+  font-style: normal;
+}
+
+#trak {
+  color: #c00;
+  font-family: "Faster One", system-ui;
+  font-weight: 400;
+  font-size: 60px;
+  font-style: normal;
+}
+
+/* removes underline from TorTrak slogan */
+.topNav .navSlogan a {
   text-decoration: none;
 }
 
-li a:hover {
-  background-color: #111;
+/* map stuff */
+.map-container {
+  display: flex;
+  align-items: stretch;
 }
 
-/* map css */
 #stormsMap {
-  height: 600px;
+  flex: 1;
+  margin-left: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+}
+
+/* filter box */
+#filters {
+  width: 300px;
+  height: 580px;
+  padding: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* Don't know if I want it rounded or not. */
+  /* border-radius: 10px; */
+}
+
+/* shared filters */
+/* GPT wrote the code for the slider CSS */
+#sharedFilters h2 {
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+#yearSelector {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.yearInputContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.yearInputContainer label {
+  margin-bottom: 5px;
+}
+
+.yearInputContainer input[type="range"],
+.yearInputContainer input[type="text"] {
+  width: 80%; /* Adjust width as needed */
+  margin-bottom: 10px;
+}
+
+.yearInputContainer input[type="text"] {
+  width: 75%; /* Adjust width as needed */
+}
+
+/* map filters */
+#mapFilters h2 {
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+#mapProviderDiv {
+  margin-bottom: 10px;
+}
+
+/* chart filters */
+#barChartFilter h2 {
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+#barChartFilter label {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+#quickStatsDiv a {
+  text-decoration: none;
+}
+
+#stats {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+#stateStats {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* index.html chart */
+#stormsChartCanvas {
+  flex: 1;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #f0f0f0;
 }
 
 /* charts.html specific */
+.state-flag img {
+  justify-content: center;
+}
+
 .state-flag ul {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin-left: 25%;
+  margin-right: 25%;
 }
 
 .state-flag li {
@@ -52,11 +231,39 @@ li a:hover {
   vertical-align: middle;
 }
 
+.state-flag a {
+  text-decoration: none;
+}
+
 .state-columns {
   display: flex;
+  padding: 60px;
   justify-content: space-between;
 }
 
 .state-column {
   flex: 1;
+}
+
+#stateContainer {
+  padding: 60px;
+  text-align: center;
+}
+
+#stateContainer img {
+  margin-bottom: 20px;
+}
+
+#faqContainer {
+  padding: 60px;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+#faqContainer h2 {
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  color: #333;
 }
