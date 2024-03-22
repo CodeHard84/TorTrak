@@ -207,7 +207,7 @@ loadStorms().then(array => {
 
   // Render the first map only if the page is root or index.html this is the only hack I could think of...
   // TODO: Fix this hack
-  if (window.location.pathname === '/TorTrak' || window.location.pathname === '/TorTrak/index.html' || window.location.pathname === '/' || window.location.pathname === '/index.html') {
+  if (window.location.pathname === '/TorTrak/' || window.location.pathname === '/TorTrak/index.html' || window.location.pathname === '/' || window.location.pathname === '/index.html') {
     console.log('index.html ' + stormsArray.length);
     let stormCountsPerState = getTotalStormsPerState(stormsArray);
     renderBarChart(stormCountsPerState, 'stormsChartCanvas', 'Number of Tornadoes');
