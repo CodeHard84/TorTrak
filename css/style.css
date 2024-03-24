@@ -246,7 +246,9 @@ p {
 }
 
 #stateContainer {
-  padding: 60px;
+  padding-top: 60px;
+  padding-right: 60px;
+  padding-left: 60px;
   text-align: center;
 }
 
