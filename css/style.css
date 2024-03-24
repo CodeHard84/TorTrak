@@ -237,7 +237,9 @@ p {
 
 .state-columns {
   display: flex;
-  padding: 60px;
+  padding-top: 60px;
+  padding-right: 60px;
+  padding-left: 60px;
   justify-content: space-between;
 }
 
@@ -246,9 +248,7 @@ p {
 }
 
 #stateContainer {
-  padding-top: 60px;
-  padding-right: 60px;
-  padding-left: 60px;
+  padding: 60px;
   text-align: center;
 }
 
