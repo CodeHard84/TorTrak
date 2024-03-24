@@ -142,7 +142,7 @@ function renderBarChart(kvp, canvasID, dataLabel) {
         if (activeElements.length > 0) {
           const clickedLabel = chartData.labels[activeElements[0].index];
           const stateAbbreviation = clickedLabel;
-          window.location.href = `/charts.html?state=${stateAbbreviation}`;
+          window.location.href = `/TorTrak/charts.html?state=${stateAbbreviation}`; // Need to change for GH pages.
         }
       }
     }
