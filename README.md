@@ -14,6 +14,8 @@ TorTrak provides customization options, enabling users to filter tornado data ba
 
 By offering a comprehensive and user-friendly solution for visualizing tornado history, TorTrak empowers users to make informed decisions regarding tornado preparedness, risk assessment, and emergency planning.
 
+You can find the website on [GitHub Pages](https://codehard84.github.io/TorTrak/).
+
 ## Wireframe
 
 ![TorTrak Wireframe](/img/wireframe.png "TorTrak Wireframe")
